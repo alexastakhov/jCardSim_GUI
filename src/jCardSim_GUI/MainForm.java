@@ -1,25 +1,16 @@
 package jCardSim_GUI;
 
 import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JToolBar;
-import java.awt.BorderLayout;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
 import javax.swing.JTextField;
-import java.awt.Insets;
 import javax.swing.JLabel;
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.RowSpec;
 import java.awt.Font;
-import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.JFileChooser;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -29,8 +20,10 @@ import javax.swing.JTextPane;
 public class MainForm {
 
 	private JFrame frmJcardsim;
-	private JTextField textField;
-	private JTextField textField_1;
+	private JTextField aidTextField;
+	private JTextField apduTextField;
+	
+	private File classFile;
 
 	/**
 	 * Launch the application.
@@ -76,35 +69,14 @@ public class MainForm {
 				JFileChooser fileOpen = new JFileChooser();      
 				
 				fileOpen.setMultiSelectionEnabled(false);
-				fileOpen.setFileFilter(new OpenFileFilter());
+				fileOpen.setFileFilter(new FileNameExtensionFilter("JavaCard Class File .class", "class"));
 				
                 int ret = fileOpen.showDialog(null, "Открыть файл");                
                 if (ret == JFileChooser.APPROVE_OPTION) {
-                    File file = fileOpen.getSelectedFile();
-                    System.out.println("Selected File = " + file.getName());
+                	classFile = fileOpen.getSelectedFile();
+                    System.out.println("Selected File = " + classFile.getName());
                 }
 			}
-			
-			class OpenFileFilter extends FileFilter {
-
-				public OpenFileFilter()
-				{
-					
-				}
-				
-				@Override
-				public boolean accept(File f) {
-					// TODO Auto-generated method stub
-					return false;
-				}
-
-				@Override
-				public String getDescription() {
-					// TODO Auto-generated method stub
-					return null;
-				} 
-            	
-            }
 		});
 		openFileBtn.setToolTipText("Open App Class File");
 		openFileBtn.setIcon(new ImageIcon(MainForm.class.getResource("/com/sun/java/swing/plaf/windows/icons/NewFolder.gif")));
@@ -112,39 +84,40 @@ public class MainForm {
 		
 		JLabel lblNewLabel = new JLabel("AID");
 		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		lblNewLabel.setBounds(44, 58, 27, 14);
+		lblNewLabel.setBounds(24, 59, 27, 14);
 		frmJcardsim.getContentPane().add(lblNewLabel);
 		
-		textField = new JTextField();
-		textField.setFont(new Font("Courier New", Font.PLAIN, 12));
-		textField.setBounds(69, 53, 188, 24);
-		frmJcardsim.getContentPane().add(textField);
-		textField.setColumns(10);
+		aidTextField = new UpperCaseField();
+		aidTextField.setToolTipText("Enter AID");
+		aidTextField.setFont(new Font("Courier New", Font.PLAIN, 12));
+		aidTextField.setBounds(51, 54, 188, 24);
+		frmJcardsim.getContentPane().add(aidTextField);
+		aidTextField.setColumns(10);
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		scrollPane.setBounds(10, 95, 709, 272);
+		scrollPane.setBounds(10, 95, 709, 291);
 		frmJcardsim.getContentPane().add(scrollPane);
 		
-		JTextPane textPane = new JTextPane();
-		textPane.setFont(new Font("Courier New", Font.PLAIN, 12));
-		textPane.setEditable(false);
-		scrollPane.setViewportView(textPane);
+		JTextPane outputTextPane = new JTextPane();
+		outputTextPane.setFont(new Font("Courier New", Font.PLAIN, 12));
+		outputTextPane.setEditable(false);
+		scrollPane.setViewportView(outputTextPane);
 		
-		textField_1 = new JTextField();
-		textField_1.setEnabled(false);
-		textField_1.setFont(new Font("Courier New", Font.PLAIN, 12));
-		textField_1.setBounds(10, 378, 588, 24);
-		frmJcardsim.getContentPane().add(textField_1);
-		textField_1.setColumns(10);
+		apduTextField = new JTextField();
+		apduTextField.setEnabled(false);
+		apduTextField.setFont(new Font("Courier New", Font.PLAIN, 12));
+		apduTextField.setBounds(10, 397, 588, 24);
+		frmJcardsim.getContentPane().add(apduTextField);
+		apduTextField.setColumns(10);
 		
-		JButton btnNewButton = new JButton("Send APDU");
-		btnNewButton.setEnabled(false);
-		btnNewButton.setBounds(608, 378, 105, 24);
-		frmJcardsim.getContentPane().add(btnNewButton);
+		JButton sendApduBtn = new JButton("Send APDU");
+		sendApduBtn.setEnabled(false);
+		sendApduBtn.setBounds(608, 397, 105, 24);
+		frmJcardsim.getContentPane().add(sendApduBtn);
 		
-		JButton btnLoadApplet = new JButton("Load Applet");
-		btnLoadApplet.setBounds(267, 53, 105, 24);
-		frmJcardsim.getContentPane().add(btnLoadApplet);
+		JButton loadAppletBtn = new JButton("Load Applet");
+		loadAppletBtn.setBounds(249, 54, 105, 24);
+		frmJcardsim.getContentPane().add(loadAppletBtn);
 	}
 }
