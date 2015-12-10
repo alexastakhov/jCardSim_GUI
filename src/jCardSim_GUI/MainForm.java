@@ -76,7 +76,7 @@ public class MainForm {
 				JFileChooser fileOpen = new JFileChooser();      
 				
 				fileOpen.setMultiSelectionEnabled(false);
-				//fileOpen.setFileFilter(FileFilter.);
+				fileOpen.setFileFilter(new OpenFileFilter());
 				
                 int ret = fileOpen.showDialog(null, "Открыть файл");                
                 if (ret == JFileChooser.APPROVE_OPTION) {
@@ -85,9 +85,26 @@ public class MainForm {
                 }
 			}
 			
-			//class ClassFileFilter extends FileFilter { 
-            //	
-            //}
+			class OpenFileFilter extends FileFilter {
+
+				public OpenFileFilter()
+				{
+					
+				}
+				
+				@Override
+				public boolean accept(File f) {
+					// TODO Auto-generated method stub
+					return false;
+				}
+
+				@Override
+				public String getDescription() {
+					// TODO Auto-generated method stub
+					return null;
+				} 
+            	
+            }
 		});
 		openFileBtn.setToolTipText("Open App Class File");
 		openFileBtn.setIcon(new ImageIcon(MainForm.class.getResource("/com/sun/java/swing/plaf/windows/icons/NewFolder.gif")));
