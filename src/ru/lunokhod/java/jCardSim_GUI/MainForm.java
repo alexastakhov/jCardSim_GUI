@@ -12,10 +12,13 @@ import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.JFileChooser;
+import javax.swing.UIManager;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import javax.swing.JTextPane;
+import com.jgoodies.looks.plastic.Plastic3DLookAndFeel;
+import com.jgoodies.looks.plastic.theme.ExperienceRoyale;
 
 public class MainForm {
 
@@ -29,6 +32,15 @@ public class MainForm {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		Plastic3DLookAndFeel.setPlasticTheme(new ExperienceRoyale());
+		
+		try{
+			UIManager.setLookAndFeel(new Plastic3DLookAndFeel());
+		}
+		catch (javax.swing.UnsupportedLookAndFeelException ex) {
+			java.util.logging.Logger.getLogger(MainForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+		}
+		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
