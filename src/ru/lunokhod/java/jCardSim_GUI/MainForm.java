@@ -1,4 +1,4 @@
-package jCardSim_GUI;
+package ru.lunokhod.java.jCardSim_GUI;
 
 import java.awt.EventQueue;
 import javax.swing.JFrame;
@@ -20,7 +20,7 @@ import javax.swing.JTextPane;
 public class MainForm {
 
 	private JFrame frmJcardsim;
-	private JTextField aidTextField;
+	private HexUpperCaseField aidTextField;
 	private JTextField apduTextField;
 	
 	private File classFile;
@@ -87,11 +87,12 @@ public class MainForm {
 		lblNewLabel.setBounds(24, 59, 27, 14);
 		frmJcardsim.getContentPane().add(lblNewLabel);
 		
-		aidTextField = new UpperCaseField();
+		aidTextField = new HexUpperCaseField();
 		aidTextField.setToolTipText("Enter AID");
 		aidTextField.setFont(new Font("Courier New", Font.PLAIN, 12));
 		aidTextField.setBounds(51, 54, 188, 24);
 		frmJcardsim.getContentPane().add(aidTextField);
+		aidTextField.setMaxLenght(24);
 		aidTextField.setColumns(10);
 		
 		JScrollPane scrollPane = new JScrollPane();
