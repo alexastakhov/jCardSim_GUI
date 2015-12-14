@@ -22,13 +22,19 @@ import com.jgoodies.looks.plastic.theme.ExperienceRoyale;
 import javax.swing.Box.Filler;
 import javax.swing.Box;
 import java.awt.Dimension;
+import javax.swing.JPanel;
+import java.awt.Color;
+import javax.swing.JSeparator;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Rectangle;
 
 public class MainForm {
 
 	private JFrame frmJcardsim;
 	private HexUpperCaseField aidTextField;
 	private JTextField apduTextField;
-	
+	private SimulatorAdapter simulatorAdapter;
 	private File classFile;
 
 	/**
@@ -61,6 +67,7 @@ public class MainForm {
 	 */
 	public MainForm() {
 		initialize();
+		simulatorAdapter = new SimulatorAdapter();
 	}
 
 	/**
@@ -70,9 +77,32 @@ public class MainForm {
 		frmJcardsim = new JFrame();
 		frmJcardsim.setResizable(false);
 		frmJcardsim.setTitle("jCardSim GUI");
-		frmJcardsim.setBounds(100, 100, 735, 480);
+		frmJcardsim.setBounds(100, 100, 735, 487);
 		frmJcardsim.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmJcardsim.getContentPane().setLayout(null);
+		
+		JPanel statusBar = new JPanel();
+		statusBar.setBorder(null);
+		statusBar.setBounds(0, 437, 729, 21);
+		frmJcardsim.getContentPane().add(statusBar);
+		statusBar.setLayout(new BorderLayout(0, 0));
+		
+		javax.swing.Box.Filler filler = new Filler((Dimension) null, (Dimension) null, (Dimension) null);
+		filler.setPreferredSize(new Dimension(10, 0));
+		filler.setMinimumSize(new Dimension(10, 0));
+		filler.setMaximumSize(new Dimension(10, 32767));
+		filler.setBounds(new Rectangle(0, 0, 10, 0));
+		filler.setAlignmentX(Component.LEFT_ALIGNMENT);
+		statusBar.add(filler, BorderLayout.WEST);
+		
+		JSeparator separator = new JSeparator();
+		separator.setForeground(Color.LIGHT_GRAY);
+		separator.setBounds(0, 436, 729, 2);
+		frmJcardsim.getContentPane().add(separator);
+		
+		JLabel classFileLabel = new JLabel("Class File: Not selected");
+		classFileLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		statusBar.add(classFileLabel);
 		
 		JToolBar toolBar = new JToolBar();
 		toolBar.setBounds(0, 0, 729, 32);
@@ -89,18 +119,19 @@ public class MainForm {
                 int ret = fileOpen.showDialog(null, "Открыть файл");                
                 if (ret == JFileChooser.APPROVE_OPTION) {
                 	classFile = fileOpen.getSelectedFile();
-                    System.out.println("Selected File = " + classFile.getName());
+                    classFileLabel.setText("Class File: " + classFile.getName());
+                    classFileLabel.setToolTipText(classFile.getPath());
                 }
 			}
 		});
 		
-		Filler filler = new Box.Filler((Dimension) null, (Dimension) null, (Dimension) null);
-		filler.setMaximumSize(new Dimension(10, 32767));
-		filler.setPreferredSize(new Dimension(10, 0));
-		filler.setMinimumSize(new Dimension(10, 0));
-		filler.setSize(new Dimension(10, 0));
-		toolBar.add(filler);
-		openFileBtn.setToolTipText("Open App Class File");
+		Filler filler1 = new Box.Filler((Dimension) null, (Dimension) null, (Dimension) null);
+		filler1.setMaximumSize(new Dimension(10, 32767));
+		filler1.setPreferredSize(new Dimension(10, 0));
+		filler1.setMinimumSize(new Dimension(10, 0));
+		filler1.setSize(new Dimension(10, 0));
+		toolBar.add(filler1);
+		openFileBtn.setToolTipText("Open JavaCard Applet Class File");
 		openFileBtn.setIcon(new ImageIcon(MainForm.class.getResource("/com/sun/java/swing/plaf/windows/icons/NewFolder.gif")));
 		toolBar.add(openFileBtn);
 		
@@ -112,9 +143,9 @@ public class MainForm {
 		aidTextField = new HexUpperCaseField();
 		aidTextField.setToolTipText("Enter AID");
 		aidTextField.setFont(new Font("Courier New", Font.PLAIN, 12));
-		aidTextField.setBounds(51, 54, 188, 24);
+		aidTextField.setBounds(51, 54, 243, 24);
 		frmJcardsim.getContentPane().add(aidTextField);
-		aidTextField.setMaxLenght(24);
+		aidTextField.setMaxLenght(32);
 		aidTextField.setColumns(10);
 		
 		JScrollPane scrollPane = new JScrollPane();
@@ -140,7 +171,7 @@ public class MainForm {
 		frmJcardsim.getContentPane().add(sendApduBtn);
 		
 		JButton loadAppletBtn = new JButton("Load Applet");
-		loadAppletBtn.setBounds(249, 54, 105, 24);
+		loadAppletBtn.setBounds(304, 54, 105, 24);
 		frmJcardsim.getContentPane().add(loadAppletBtn);
 	}
 }
