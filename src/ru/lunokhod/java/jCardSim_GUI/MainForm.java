@@ -19,6 +19,9 @@ import java.io.File;
 import javax.swing.JTextPane;
 import com.jgoodies.looks.plastic.Plastic3DLookAndFeel;
 import com.jgoodies.looks.plastic.theme.ExperienceRoyale;
+import javax.swing.Box.Filler;
+import javax.swing.Box;
+import java.awt.Dimension;
 
 public class MainForm {
 
@@ -90,6 +93,13 @@ public class MainForm {
                 }
 			}
 		});
+		
+		Filler filler = new Box.Filler((Dimension) null, (Dimension) null, (Dimension) null);
+		filler.setMaximumSize(new Dimension(10, 32767));
+		filler.setPreferredSize(new Dimension(10, 0));
+		filler.setMinimumSize(new Dimension(10, 0));
+		filler.setSize(new Dimension(10, 0));
+		toolBar.add(filler);
 		openFileBtn.setToolTipText("Open App Class File");
 		openFileBtn.setIcon(new ImageIcon(MainForm.class.getResource("/com/sun/java/swing/plaf/windows/icons/NewFolder.gif")));
 		toolBar.add(openFileBtn);
