@@ -1,33 +1,23 @@
 package ru.lunokhod.java.jCardSim_GUI;
 
 import java.awt.EventQueue;
-import javax.swing.JFrame;
-import javax.swing.JToolBar;
-import javax.swing.JButton;
-import javax.swing.ImageIcon;
-import javax.swing.JTextField;
-import javax.swing.JLabel;
 import java.awt.Font;
-import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.JFileChooser;
-import javax.swing.UIManager;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.File;
-import javax.swing.JTextPane;
 import com.jgoodies.looks.plastic.Plastic3DLookAndFeel;
 import com.jgoodies.looks.plastic.theme.ExperienceRoyale;
-import javax.swing.Box.Filler;
-import javax.swing.Box;
 import java.awt.Dimension;
 import javax.swing.JPanel;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 import java.awt.Color;
-import javax.swing.JSeparator;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Rectangle;
+import java.awt.TrayIcon.MessageType;
+import javax.swing.*;
+import javax.swing.Box.Filler;
 
 public class MainForm {
 
@@ -66,8 +56,9 @@ public class MainForm {
 	 * Create the application.
 	 */
 	public MainForm() {
-		initialize();
+		classFile = null;
 		simulatorAdapter = new SimulatorAdapter();
+		initialize();
 	}
 
 	/**
@@ -121,6 +112,8 @@ public class MainForm {
                 	classFile = fileOpen.getSelectedFile();
                     classFileLabel.setText("Class File: " + classFile.getName());
                     classFileLabel.setToolTipText(classFile.getPath());
+                    
+                    System.out.println("Load Applet Class File: " + classFile.getPath());
                 }
 			}
 		});
@@ -171,7 +164,26 @@ public class MainForm {
 		frmJcardsim.getContentPane().add(sendApduBtn);
 		
 		JButton loadAppletBtn = new JButton("Load Applet");
+		loadAppletBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if (classFile == null) {
+					JOptionPane.showMessageDialog(new JFrame(), "Load Applet Class File", "Error", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				if (aidTextField.getText().length() == 0) {
+					JOptionPane.showMessageDialog(new JFrame(), "Enter correct AID", "Error", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				
+				loadApplet(aidTextField.getText(), classFile);
+			}
+		});
 		loadAppletBtn.setBounds(304, 54, 105, 24);
 		frmJcardsim.getContentPane().add(loadAppletBtn);
+	}
+	
+	private void loadApplet(String aid, File appFile) {
+		simulatorAdapter.installApplet(aid, appFile);
+		System.out.println("Applet Class Installed: " + classFile.getName() + " (AID: " + aid);
 	}
 }
