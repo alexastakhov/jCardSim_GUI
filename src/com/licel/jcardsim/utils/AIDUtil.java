@@ -17,9 +17,11 @@ package com.licel.jcardsim.utils;
 
 import javacard.framework.AID;
 import javacard.framework.ISO7816;
-import org.bouncycastle.util.encoders.Hex;
 
 import java.util.Comparator;
+
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /**
  * Utility methods for dealing with AIDs.
@@ -116,7 +118,7 @@ public final class AIDUtil {
         if (aidString == null) {
             throw new NullPointerException("aidString");
         }
-        return create(Hex.decode(aidString));
+        return create(decodeStringAID(aidString));
     }
 
     /**
@@ -141,5 +143,44 @@ public final class AIDUtil {
         return aidComparator;
     }
 
+    private static byte[] decodeStringAID(String aid) {
+    	byte[] bArr;
+    	
+    	if (aid == null || aid.length() == 0)
+    		return new byte[] {};
+    		
+    	if (aid.length() % 2 != 0)
+    		aid += "0";
+    	
+    	bArr = new byte[aid.length() / 2];
+    	for (int i = 0; i < bArr.length; i++)
+    	{
+    		bArr[i] = (byte)((charCodeToByte(aid.charAt(i * 2)) << 4) & 0xF0 | charCodeToByte(aid.charAt(i * 2 + 1))); 
+    	}
+    	
+    	return bArr;
+    }
+    
+    private static byte charCodeToByte(char c) {
+    	switch (c) {
+    		case '1' : return 1;
+    		case '2' : return 2;
+    		case '3' : return 3;
+    		case '4' : return 4;
+    		case '5' : return 5;
+    		case '6' : return 6;
+    		case '7' : return 7;
+    		case '8' : return 8;
+    		case '9' : return 9;
+    		case 'A' : return 10;
+    		case 'B' : return 11;
+    		case 'C' : return 12;
+    		case 'D' : return 13;
+    		case 'E' : return 14;
+    		case 'F' : return 15;
+    		default : return 0;
+    	}
+    }
+    
     private AIDUtil() {}
 }

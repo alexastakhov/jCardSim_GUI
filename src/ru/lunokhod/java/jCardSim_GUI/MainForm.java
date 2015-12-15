@@ -18,6 +18,8 @@ import java.awt.Rectangle;
 import java.awt.TrayIcon.MessageType;
 import javax.swing.*;
 import javax.swing.Box.Filler;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 
 public class MainForm {
 
@@ -166,16 +168,25 @@ public class MainForm {
 		JButton loadAppletBtn = new JButton("Load Applet");
 		loadAppletBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				String aid = aidTextField.getText();
+				
 				if (classFile == null) {
 					JOptionPane.showMessageDialog(new JFrame(), "Load Applet Class File", "Error", JOptionPane.ERROR_MESSAGE);
 					return;
 				}
-				if (aidTextField.getText().length() == 0) {
-					JOptionPane.showMessageDialog(new JFrame(), "Enter correct AID", "Error", JOptionPane.ERROR_MESSAGE);
+				
+				if (aid.length() < 10) {
+					JOptionPane.showMessageDialog(new JFrame(), "AID has to contain 5 or more bytes.", "Warning", JOptionPane.WARNING_MESSAGE);
 					return;
 				}
 				
-				loadApplet(aidTextField.getText(), classFile);
+				if (aid.length() % 2 != 0)
+				{
+					JOptionPane.showMessageDialog(new JFrame(), "AID has to contain even number of symbols.", "Warning", JOptionPane.WARNING_MESSAGE);
+					return;
+				}
+				
+				loadApplet(aid, classFile);
 			}
 		});
 		loadAppletBtn.setBounds(304, 54, 105, 24);
@@ -184,6 +195,6 @@ public class MainForm {
 	
 	private void loadApplet(String aid, File appFile) {
 		simulatorAdapter.installApplet(aid, appFile);
-		System.out.println("Applet Class Installed: " + classFile.getName() + " (AID: " + aid);
+		System.out.println("Applet Class Installed: " + classFile.getName() + " (AID: " + aid + ")");
 	}
 }
