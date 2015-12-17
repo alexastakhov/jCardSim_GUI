@@ -6,5 +6,6 @@
 	<classpathentry kind="lib" path="jgoodies-common-1.7.0.jar"/>
 	<classpathentry kind="lib" path="jgoodies-looks-2.5.3.jar"/>
 	<classpathentry kind="lib" path="lib/jcardsim-2.2.2-all.jar"/>
+	<classpathentry kind="lib" path="C:/Users/alex/eclipse_jc_workspace/jCardSim_GUI/lib/bcel-5.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

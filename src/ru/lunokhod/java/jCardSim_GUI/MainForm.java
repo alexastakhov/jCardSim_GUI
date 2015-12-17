@@ -136,6 +136,7 @@ public class MainForm {
 		frmJcardsim.getContentPane().add(lblNewLabel);
 		
 		aidTextField = new HexUpperCaseField();
+		aidTextField.setText("121212121212");
 		aidTextField.setToolTipText("Enter AID");
 		aidTextField.setFont(new Font("Courier New", Font.PLAIN, 12));
 		aidTextField.setBounds(51, 54, 243, 24);
@@ -194,7 +195,9 @@ public class MainForm {
 	}
 	
 	private void loadApplet(String aid, File appFile) {
-		simulatorAdapter.installApplet(aid, appFile);
-		System.out.println("Applet Class Installed: " + classFile.getName() + " (AID: " + aid + ")");
+		if (simulatorAdapter.installApplet(aid, appFile))
+			System.out.println("Applet Class Installed: " + classFile.getName() + " (AID: " + aid + ")");
+		else
+			System.out.println("Applet Class is not Installed!");
 	}
 }

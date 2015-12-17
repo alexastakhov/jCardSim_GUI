@@ -7,7 +7,11 @@ import java.io.IOException;
 import com.licel.jcardsim.base.Simulator;
 import javacard.framework.AID;
 import javacard.framework.Applet;
+import javacard.framework.SystemException;
 import com.licel.jcardsim.utils.AIDUtil;
+import org.apache.bcel.classfile.ClassParser;
+import org.apache.bcel.classfile.JavaClass;
+import org.apache.bcel.classfile.ClassFormatException;
 
 public class SimulatorAdapter {
 	private Simulator simulator;
@@ -17,29 +21,64 @@ public class SimulatorAdapter {
 		simulator = new Simulator();
 	}
 
-	public void installApplet(String aid, File classFile) {
+	public boolean installApplet(String aid, File classFile) {
 		AID appAid = AIDUtil.create(aid);
 		Class<?> appletClass = null;
 		
 		try {
 			byte[] bytes = getByteCode(classFile);
-			appletClass = classLoader.loadClass(bytes, "ru.lunokhod.javacard.applet2c.MyApplet");
+			String name = getFileClassName(classFile);
+			
+			System.out.println("ClassName parsed : " + name);
+			appletClass = classLoader.loadClass(bytes, name);
 		}
 		catch (Exception e) {
 			System.out.println("SimulatorAdapter.installApplet ClassLoader.loadClass Exception: " + e.getMessage());
 		}
 		
 		if (appletClass != null) {
-			System.out.println("appletClass loaded");
-			//simulator.loadApplet(appAid, appletClass);
+			try
+			{
+				simulator.loadApplet(appAid, appletClass);
+				System.out.println("appletClass loaded into Simulator");
+			}
+			catch (SystemException e) {
+				System.out.println("SimulatorAdapter.installApplet loadApplet SystemException: " + e.getMessage());
+				return false;
+			}
+			return true;
 		}
 		else {
 			System.out.println("appletClass == null");
+			return false;
 		}
 	}
 	
 	public void installApplet(byte[] aid, File classFile) {
 		installApplet(AIDUtil.create(aid).toString(), classFile);
+	}
+	
+	private String getFileClassName(File appFile) {
+		ClassParser parser;
+		String name = "";
+		JavaClass jclass;
+		
+		try {
+			parser = new ClassParser(appFile.getPath());
+			jclass = parser.parse();
+			name = jclass.getClassName();
+			
+			if (!jclass.getSuperclassName().equals("javacard.framework.Applet"))
+				throw new ClassFormatException("Incorrect superclass");
+		}
+		catch (IOException e) {
+			System.out.println("SimulatorAdapter.getFileClassName IOException: " + e.getMessage());
+		}
+		catch (ClassFormatException e) {
+			System.out.println("SimulatorAdapter.getFileClassName ClassFormatException: " + e.getMessage());
+		}
+		
+		return name;
 	}
 	
 	private byte[] getByteCode(File appFile) {
@@ -64,7 +103,7 @@ public class SimulatorAdapter {
 				}
 			}
 			catch (IOException e) {
-				System.out.println("SimulatorAdapter.getByteCode Error while closing stream: " + e);
+				System.out.println("SimulatorAdapter.getByteCode closing stream IOException: " + e);
 			}	
 		}
 		return bytes;
