@@ -10,22 +10,23 @@ import com.jgoodies.looks.plastic.theme.ExperienceRoyale;
 import java.awt.Dimension;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileNameExtensionFilter;
-
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
+import javax.swing.text.Style;
+import javax.swing.text.StyleContext;
 import java.awt.Color;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Rectangle;
-import java.awt.TrayIcon.MessageType;
 import javax.swing.*;
 import javax.swing.Box.Filler;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 
 public class MainForm {
 
 	private JFrame frmJcardsim;
 	private HexUpperCaseField aidTextField;
 	private JTextField apduTextField;
+	private JTextPane outputTextPane;
 	private SimulatorAdapter simulatorAdapter;
 	private File classFile;
 
@@ -70,13 +71,13 @@ public class MainForm {
 		frmJcardsim = new JFrame();
 		frmJcardsim.setResizable(false);
 		frmJcardsim.setTitle("jCardSim GUI");
-		frmJcardsim.setBounds(100, 100, 735, 487);
+		frmJcardsim.setBounds(100, 100, 858, 560);
 		frmJcardsim.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmJcardsim.getContentPane().setLayout(null);
 		
 		JPanel statusBar = new JPanel();
 		statusBar.setBorder(null);
-		statusBar.setBounds(0, 437, 729, 21);
+		statusBar.setBounds(0, 511, 852, 21);
 		frmJcardsim.getContentPane().add(statusBar);
 		statusBar.setLayout(new BorderLayout(0, 0));
 		
@@ -90,15 +91,17 @@ public class MainForm {
 		
 		JSeparator separator = new JSeparator();
 		separator.setForeground(Color.LIGHT_GRAY);
-		separator.setBounds(0, 436, 729, 2);
+		separator.setBounds(0, 509, 852, 2);
 		frmJcardsim.getContentPane().add(separator);
 		
 		JLabel classFileLabel = new JLabel("Class File: Not selected");
+		classFileLabel.setMinimumSize(new Dimension(800, 14));
 		classFileLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		statusBar.add(classFileLabel);
 		
 		JToolBar toolBar = new JToolBar();
-		toolBar.setBounds(0, 0, 729, 32);
+		toolBar.setMinimumSize(new Dimension(10000, 2));
+		toolBar.setBounds(0, 0, 852, 32);
 		frmJcardsim.getContentPane().add(toolBar);
 		
 		JButton openFileBtn = new JButton("");
@@ -115,7 +118,7 @@ public class MainForm {
                     classFileLabel.setText("Class File: " + classFile.getName());
                     classFileLabel.setToolTipText(classFile.getPath());
                     
-                    System.out.println("Load Applet Class File: " + classFile.getPath());
+                    writeLine("Loaded Applet Class File: " + classFile.getPath());
                 }
 			}
 		});
@@ -132,24 +135,24 @@ public class MainForm {
 		
 		JLabel lblNewLabel = new JLabel("AID");
 		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		lblNewLabel.setBounds(24, 59, 27, 14);
+		lblNewLabel.setBounds(24, 48, 27, 14);
 		frmJcardsim.getContentPane().add(lblNewLabel);
 		
 		aidTextField = new HexUpperCaseField();
 		aidTextField.setText("121212121212");
 		aidTextField.setToolTipText("Enter AID");
 		aidTextField.setFont(new Font("Courier New", Font.PLAIN, 12));
-		aidTextField.setBounds(51, 54, 243, 24);
+		aidTextField.setBounds(51, 43, 243, 24);
 		frmJcardsim.getContentPane().add(aidTextField);
 		aidTextField.setMaxLenght(32);
 		aidTextField.setColumns(10);
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		scrollPane.setBounds(10, 95, 709, 291);
+		scrollPane.setBounds(10, 78, 832, 385);
 		frmJcardsim.getContentPane().add(scrollPane);
 		
-		JTextPane outputTextPane = new JTextPane();
+		outputTextPane = new JTextPane();
 		outputTextPane.setFont(new Font("Courier New", Font.PLAIN, 12));
 		outputTextPane.setEditable(false);
 		scrollPane.setViewportView(outputTextPane);
@@ -157,16 +160,16 @@ public class MainForm {
 		apduTextField = new JTextField();
 		apduTextField.setEnabled(false);
 		apduTextField.setFont(new Font("Courier New", Font.PLAIN, 12));
-		apduTextField.setBounds(10, 397, 588, 24);
+		apduTextField.setBounds(10, 474, 719, 24);
 		frmJcardsim.getContentPane().add(apduTextField);
 		apduTextField.setColumns(10);
 		
 		JButton sendApduBtn = new JButton("Send APDU");
 		sendApduBtn.setEnabled(false);
-		sendApduBtn.setBounds(608, 397, 105, 24);
+		sendApduBtn.setBounds(737, 474, 105, 24);
 		frmJcardsim.getContentPane().add(sendApduBtn);
 		
-		JButton loadAppletBtn = new JButton("Load Applet");
+		JButton loadAppletBtn = new JButton("Install Applet");
 		loadAppletBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				String aid = aidTextField.getText();
@@ -181,23 +184,51 @@ public class MainForm {
 					return;
 				}
 				
-				if (aid.length() % 2 != 0)
-				{
+				if (aid.length() % 2 != 0) {
 					JOptionPane.showMessageDialog(new JFrame(), "AID has to contain even number of symbols.", "Warning", JOptionPane.WARNING_MESSAGE);
+					return;
+				}
+				
+				if (simulatorAdapter.isAppletInstalled(aid)) {
+					JOptionPane.showMessageDialog(new JFrame(), "Applet with same AID is already installed.", "Warning", JOptionPane.WARNING_MESSAGE);
 					return;
 				}
 				
 				loadApplet(aid, classFile);
 			}
 		});
-		loadAppletBtn.setBounds(304, 54, 105, 24);
+		loadAppletBtn.setBounds(304, 43, 105, 24);
 		frmJcardsim.getContentPane().add(loadAppletBtn);
 	}
 	
 	private void loadApplet(String aid, File appFile) {
 		if (simulatorAdapter.installApplet(aid, appFile))
-			System.out.println("Applet Class Installed: " + classFile.getName() + " (AID: " + aid + ")");
+		{
+			writeLine("Applet Class Installed: " + classFile.getName() + " (AID: " + aid + ")");
+			writeLine();
+		}
 		else
-			System.out.println("Applet Class is not Installed!");
+		{
+			writeLine("Applet Class is not Installed! Invalid Superclass or file format.");
+			writeLine();
+		}
+	}
+	
+	void writeLine(String line) {
+		Document doc = outputTextPane.getDocument();
+		StyleContext context = new StyleContext();
+		Style defStyle = context.getStyle(StyleContext.DEFAULT_STYLE);
+		
+		try {
+			doc.insertString(doc.getLength(), line + "\r\n", defStyle);
+			System.out.println(line);
+		}
+		catch (BadLocationException e) {
+			System.out.println("MainForm.writeMsg BadLocationException");
+		}
+	}
+	
+	void writeLine() {
+		writeLine("");
 	}
 }

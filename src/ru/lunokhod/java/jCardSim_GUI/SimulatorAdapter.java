@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.licel.jcardsim.base.Simulator;
 import javacard.framework.AID;
 import javacard.framework.Applet;
@@ -16,6 +19,7 @@ import org.apache.bcel.classfile.ClassFormatException;
 public class SimulatorAdapter {
 	private Simulator simulator;
 	SCAppClassLoader classLoader = new SCAppClassLoader();
+	HashMap<AID, String> applets = new HashMap<>();
 	
 	public SimulatorAdapter() {
 		simulator = new Simulator();
@@ -24,13 +28,22 @@ public class SimulatorAdapter {
 	public boolean installApplet(String aid, File classFile) {
 		AID appAid = AIDUtil.create(aid);
 		Class<?> appletClass = null;
-		
-		try {
-			byte[] bytes = getByteCode(classFile);
-			String name = getFileClassName(classFile);
+		byte[] bytes = getByteCode(classFile);
+		JavaClass jclass = getFileClassDescriptor(classFile);
 			
-			System.out.println("ClassName parsed : " + name);
-			appletClass = classLoader.loadClass(bytes, name);
+		try {	
+			if (jclass != null) {
+				System.out.println("ClassName parsed : " + jclass.getClassName());
+				System.out.println("SuperclassName parsed : " + jclass.getSuperclassName());
+				
+				appletClass = classLoader.loadClass(bytes, jclass.getClassName());
+				
+				if (!checkAppletSuperclass(appletClass))
+				{
+					System.out.println("SimulatorAdapter.installApplet invalid superclass: " + jclass.getSuperclassName());
+					return false;
+				}
+			}
 		}
 		catch (Exception e) {
 			System.out.println("SimulatorAdapter.installApplet ClassLoader.loadClass Exception: " + e.getMessage());
@@ -40,13 +53,15 @@ public class SimulatorAdapter {
 			try
 			{
 				simulator.loadApplet(appAid, appletClass);
+				applets.put(appAid, jclass.getClassName());
+				
 				System.out.println("appletClass loaded into Simulator");
+				return true;
 			}
 			catch (SystemException e) {
 				System.out.println("SimulatorAdapter.installApplet loadApplet SystemException: " + e.getMessage());
 				return false;
 			}
-			return true;
 		}
 		else {
 			System.out.println("appletClass == null");
@@ -58,18 +73,26 @@ public class SimulatorAdapter {
 		installApplet(AIDUtil.create(aid).toString(), classFile);
 	}
 	
-	private String getFileClassName(File appFile) {
+	public Map<String, String> getInstalledApplets() {
+		Map<String, String> map = new HashMap<>();
+		
+		for (AID aid : applets.keySet())
+			map.put(AIDUtil.toString(aid), applets.get(aid));
+		return map;
+	}
+	
+	public boolean isAppletInstalled(String aid) {
+		for (AID a : applets.keySet()) 
+			if (AIDUtil.toString(a) == aid) return true;
+		return false;
+	}
+	
+	private JavaClass getFileClassDescriptor(File appFile) {
 		ClassParser parser;
-		String name = "";
-		JavaClass jclass;
 		
 		try {
 			parser = new ClassParser(appFile.getPath());
-			jclass = parser.parse();
-			name = jclass.getClassName();
-			
-			if (!jclass.getSuperclassName().equals("javacard.framework.Applet"))
-				throw new ClassFormatException("Incorrect superclass");
+			return parser.parse();
 		}
 		catch (IOException e) {
 			System.out.println("SimulatorAdapter.getFileClassName IOException: " + e.getMessage());
@@ -78,7 +101,7 @@ public class SimulatorAdapter {
 			System.out.println("SimulatorAdapter.getFileClassName ClassFormatException: " + e.getMessage());
 		}
 		
-		return name;
+		return null;
 	}
 	
 	private byte[] getByteCode(File appFile) {
@@ -109,17 +132,35 @@ public class SimulatorAdapter {
 		return bytes;
 	}
 	
+    private boolean checkAppletSuperclass(Class<?> appletClass) {
+        Class<?> parent = appletClass;
+        while (parent != Object.class) {
+            if (parent == Applet.class) {
+                return true;
+            }
+            parent = parent.getSuperclass();
+        }
+        return false;
+    }
+	
 	class SCAppClassLoader extends ClassLoader {
 		SCAppClassLoader() {
 			super();
 		}
 		
-		public Class<?> loadClass(byte[] bytes, String className) {
+		Class<?> loadClass(byte[] bytes, String className) {
 			try {
-				return this.defineClass(className, bytes, 0, bytes.length);
+				Class<?> jclass = this.findLoadedClass(className);
+				if (jclass != null)
+					return jclass;
+				else
+					return this.defineClass(className, bytes, 0, bytes.length);
 			}
 			catch (ClassFormatError e) {
 				System.out.println("SimulatorAdapter.loadAppClass ClassFormatError: " + e);
+			}
+			catch (Exception e) {
+				System.out.println("SimulatorAdapter.loadAppClass Exception: " + e);
 			}
 			return null;
 		}
