@@ -4,9 +4,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
 import com.licel.jcardsim.base.Simulator;
 import javacard.framework.AID;
 import javacard.framework.Applet;
@@ -82,8 +82,9 @@ public class SimulatorAdapter {
 	}
 	
 	public boolean isAppletInstalled(String aid) {
-		for (AID a : applets.keySet()) 
-			if (AIDUtil.toString(a) == aid) return true;
+		for (AID a : applets.keySet()) {
+			if (AIDUtil.toString(a).equals(aid)) return true;
+		}
 		return false;
 	}
 	
@@ -163,6 +164,18 @@ public class SimulatorAdapter {
 				System.out.println("SimulatorAdapter.loadAppClass Exception: " + e);
 			}
 			return null;
+		}
+	}
+	
+	class AppletDescriptor {
+		private AID aid;
+		private String className;
+		private ArrayList<String> superClassNames;
+		private long size;
+		
+		AppletDescriptor () { 
+			className = "";
+			superClassNames = new ArrayList<String>();
 		}
 	}
 }

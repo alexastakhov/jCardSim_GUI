@@ -20,13 +20,17 @@ import java.awt.Component;
 import java.awt.Rectangle;
 import javax.swing.*;
 import javax.swing.Box.Filler;
+import javax.swing.event.ListDataListener;
 
 public class MainForm {
 
 	private JFrame frmJcardsim;
 	private HexUpperCaseField aidTextField;
 	private JTextField apduTextField;
+	private JButton sendApduBtn;
 	private JTextPane outputTextPane;
+	private JComboBox<String> comboBox;
+	private ComboBoxModel<String> selectComboModel;
 	private SimulatorAdapter simulatorAdapter;
 	private File classFile;
 
@@ -139,7 +143,6 @@ public class MainForm {
 		frmJcardsim.getContentPane().add(lblNewLabel);
 		
 		aidTextField = new HexUpperCaseField();
-		aidTextField.setText("121212121212");
 		aidTextField.setToolTipText("Enter AID");
 		aidTextField.setFont(new Font("Courier New", Font.PLAIN, 12));
 		aidTextField.setBounds(51, 43, 243, 24);
@@ -164,12 +167,13 @@ public class MainForm {
 		frmJcardsim.getContentPane().add(apduTextField);
 		apduTextField.setColumns(10);
 		
-		JButton sendApduBtn = new JButton("Send APDU");
+		sendApduBtn = new JButton("Send APDU");
 		sendApduBtn.setEnabled(false);
 		sendApduBtn.setBounds(737, 474, 105, 24);
 		frmJcardsim.getContentPane().add(sendApduBtn);
 		
 		JButton loadAppletBtn = new JButton("Install Applet");
+		loadAppletBtn.setToolTipText("Click to install Applet");
 		loadAppletBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				String aid = aidTextField.getText();
@@ -197,13 +201,32 @@ public class MainForm {
 				loadApplet(aid, classFile);
 			}
 		});
-		loadAppletBtn.setBounds(304, 43, 105, 24);
+		loadAppletBtn.setBounds(304, 43, 95, 24);
 		frmJcardsim.getContentPane().add(loadAppletBtn);
+		
+		comboBox = new JComboBox<String>();
+		comboBox.setBounds(440, 43, 261, 24);
+		selectComboModel = comboBox.getModel();
+		frmJcardsim.getContentPane().add(comboBox);
+		
+		JButton btnSelect = new JButton("Select");
+		btnSelect.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
+		btnSelect.setPreferredSize(new Dimension(95, 23));
+		btnSelect.setToolTipText("Click to install Applet");
+		btnSelect.setBounds(711, 43, 95, 24);
+		frmJcardsim.getContentPane().add(btnSelect);
 	}
 	
 	private void loadApplet(String aid, File appFile) {
 		if (simulatorAdapter.installApplet(aid, appFile))
 		{
+			aidTextField.setText("");
+			//apduTextField.setEnabled(true);
+			//sendApduBtn.setEnabled(true);
+			
 			writeLine("Applet Class Installed: " + classFile.getName() + " (AID: " + aid + ")");
 			writeLine();
 		}
