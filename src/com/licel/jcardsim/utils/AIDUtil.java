@@ -17,11 +17,7 @@ package com.licel.jcardsim.utils;
 
 import javacard.framework.AID;
 import javacard.framework.ISO7816;
-
 import java.util.Comparator;
-
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 
 /**
  * Utility methods for dealing with AIDs.

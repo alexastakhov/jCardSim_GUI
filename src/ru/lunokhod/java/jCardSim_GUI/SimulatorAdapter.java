@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import com.licel.jcardsim.base.Simulator;
@@ -19,7 +20,7 @@ import org.apache.bcel.classfile.ClassFormatException;
 public class SimulatorAdapter {
 	private Simulator simulator;
 	SCAppClassLoader classLoader = new SCAppClassLoader();
-	HashMap<AID, String> applets = new HashMap<>();
+	ArrayList<AppletDescriptor> applets = new ArrayList<AppletDescriptor>();
 	
 	public SimulatorAdapter() {
 		simulator = new Simulator();
@@ -30,13 +31,14 @@ public class SimulatorAdapter {
 		Class<?> appletClass = null;
 		byte[] bytes = getByteCode(classFile);
 		JavaClass jclass = getFileClassDescriptor(classFile);
+		String className = jclass.getClassName();
 			
 		try {	
 			if (jclass != null) {
-				System.out.println("ClassName parsed : " + jclass.getClassName());
+				System.out.println("ClassName parsed : " + className);
 				System.out.println("SuperclassName parsed : " + jclass.getSuperclassName());
 				
-				appletClass = classLoader.loadClass(bytes, jclass.getClassName());
+				appletClass = classLoader.loadClass(bytes, className);
 				
 				if (!checkAppletSuperclass(appletClass))
 				{
@@ -53,7 +55,7 @@ public class SimulatorAdapter {
 			try
 			{
 				simulator.loadApplet(appAid, appletClass);
-				applets.put(appAid, jclass.getClassName());
+				applets.add(new AppletDescriptor(appAid, className, classFile.getPath(), bytes.length));
 				
 				System.out.println("appletClass loaded into Simulator");
 				return true;
@@ -73,19 +75,25 @@ public class SimulatorAdapter {
 		installApplet(AIDUtil.create(aid).toString(), classFile);
 	}
 	
-	public Map<String, String> getInstalledApplets() {
-		Map<String, String> map = new HashMap<>();
-		
-		for (AID aid : applets.keySet())
-			map.put(AIDUtil.toString(aid), applets.get(aid));
-		return map;
+	public ArrayList<AppletDescriptor> getInstalledApplets() {
+		return applets;
 	}
 	
 	public boolean isAppletInstalled(String aid) {
-		for (AID a : applets.keySet()) {
-			if (AIDUtil.toString(a).equals(aid)) return true;
+		for (AppletDescriptor ad : applets) {
+			if (AIDUtil.toString(ad.getAid()).equals(aid)) return true;
 		}
 		return false;
+	}
+	
+	public void reset() {
+		simulator.reset();
+		applets.clear();
+	}
+	
+	public void resetRuntime() {
+		simulator.resetRuntime();
+		applets.clear();
 	}
 	
 	private JavaClass getFileClassDescriptor(File appFile) {
@@ -101,7 +109,6 @@ public class SimulatorAdapter {
 		catch (ClassFormatException e) {
 			System.out.println("SimulatorAdapter.getFileClassName ClassFormatException: " + e.getMessage());
 		}
-		
 		return null;
 	}
 	
@@ -164,18 +171,6 @@ public class SimulatorAdapter {
 				System.out.println("SimulatorAdapter.loadAppClass Exception: " + e);
 			}
 			return null;
-		}
-	}
-	
-	class AppletDescriptor {
-		private AID aid;
-		private String className;
-		private ArrayList<String> superClassNames;
-		private long size;
-		
-		AppletDescriptor () { 
-			className = "";
-			superClassNames = new ArrayList<String>();
 		}
 	}
 }

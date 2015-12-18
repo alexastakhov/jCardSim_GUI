@@ -5,8 +5,11 @@ import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.util.ArrayList;
 import com.jgoodies.looks.plastic.Plastic3DLookAndFeel;
 import com.jgoodies.looks.plastic.theme.ExperienceRoyale;
+import com.licel.jcardsim.utils.AIDUtil;
+
 import java.awt.Dimension;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -20,7 +23,6 @@ import java.awt.Component;
 import java.awt.Rectangle;
 import javax.swing.*;
 import javax.swing.Box.Filler;
-import javax.swing.event.ListDataListener;
 
 public class MainForm {
 
@@ -29,10 +31,10 @@ public class MainForm {
 	private JTextField apduTextField;
 	private JButton sendApduBtn;
 	private JTextPane outputTextPane;
-	private JComboBox<String> comboBox;
-	private ComboBoxModel<String> selectComboModel;
+	private JComboBox<String> aidComboBox;
 	private SimulatorAdapter simulatorAdapter;
 	private File classFile;
+	DefaultComboBoxModel<String> comboBoxModel;
 
 	/**
 	 * Launch the application.
@@ -204,14 +206,17 @@ public class MainForm {
 		loadAppletBtn.setBounds(304, 43, 95, 24);
 		frmJcardsim.getContentPane().add(loadAppletBtn);
 		
-		comboBox = new JComboBox<String>();
-		comboBox.setBounds(440, 43, 261, 24);
-		selectComboModel = comboBox.getModel();
-		frmJcardsim.getContentPane().add(comboBox);
+		comboBoxModel = new DefaultComboBoxModel<String>();
+		aidComboBox = new JComboBox<String>();
+		aidComboBox.setBounds(440, 43, 261, 24);
+		aidComboBox.setModel(comboBoxModel);
+		frmJcardsim.getContentPane().add(aidComboBox);
 		
 		JButton btnSelect = new JButton("Select");
 		btnSelect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				//apduTextField.setEnabled(true);
+				//sendApduBtn.setEnabled(true);
 			}
 		});
 		btnSelect.setPreferredSize(new Dimension(95, 23));
@@ -224,9 +229,7 @@ public class MainForm {
 		if (simulatorAdapter.installApplet(aid, appFile))
 		{
 			aidTextField.setText("");
-			//apduTextField.setEnabled(true);
-			//sendApduBtn.setEnabled(true);
-			
+			refreshAidCombo();
 			writeLine("Applet Class Installed: " + classFile.getName() + " (AID: " + aid + ")");
 			writeLine();
 		}
@@ -237,7 +240,16 @@ public class MainForm {
 		}
 	}
 	
-	void writeLine(String line) {
+	private void refreshAidCombo() {
+		ArrayList<AppletDescriptor> applets = simulatorAdapter.getInstalledApplets();
+		
+		comboBoxModel.removeAllElements();
+		for (AppletDescriptor ad : applets) {
+			comboBoxModel.addElement(AIDUtil.toString(ad.getAid()));
+		}
+	}
+	
+	private void writeLine(String line) {
 		Document doc = outputTextPane.getDocument();
 		StyleContext context = new StyleContext();
 		Style defStyle = context.getStyle(StyleContext.DEFAULT_STYLE);
@@ -251,7 +263,7 @@ public class MainForm {
 		}
 	}
 	
-	void writeLine() {
+	private void writeLine() {
 		writeLine("");
 	}
 }
