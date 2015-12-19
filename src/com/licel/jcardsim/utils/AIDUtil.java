@@ -116,6 +116,13 @@ public final class AIDUtil {
         }
         return create(decodeStringAID(aidString));
     }
+    
+    public static byte[] getAidBytes(AID aid) {
+    	byte[] bytes = new byte[16];
+    	aid.getBytes(bytes, (short)0);
+    	
+    	return bytes;
+    }
 
     /**
      * Convert AID to hex-string

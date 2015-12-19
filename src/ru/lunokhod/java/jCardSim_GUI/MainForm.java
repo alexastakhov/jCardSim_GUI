@@ -18,9 +18,10 @@ import javax.swing.text.Document;
 import javax.swing.text.Style;
 import javax.swing.text.StyleContext;
 import java.awt.Color;
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
+
 import javax.swing.*;
 import javax.swing.Box.Filler;
 
@@ -30,6 +31,7 @@ public class MainForm {
 	private HexUpperCaseField aidTextField;
 	private JTextField apduTextField;
 	private JButton sendApduBtn;
+	private JButton selectAppBtn;
 	private JTextPane outputTextPane;
 	private JComboBox<String> aidComboBox;
 	private SimulatorAdapter simulatorAdapter;
@@ -74,10 +76,16 @@ public class MainForm {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		int locationX = (screenSize.width - 858) / 2;
+		int locationY = (screenSize.height - 560) / 2;
+		int sizeWidth = 858;
+		int sizeHeight = 560;
+		
 		frmJcardsim = new JFrame();
 		frmJcardsim.setResizable(false);
-		frmJcardsim.setTitle("jCardSim GUI");
-		frmJcardsim.setBounds(100, 100, 858, 560);
+		frmJcardsim.setTitle("jCardSim GUI 1.0");
+		frmJcardsim.setBounds(locationX, locationY, sizeWidth, sizeHeight);
 		frmJcardsim.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmJcardsim.getContentPane().setLayout(null);
 		
@@ -85,7 +93,7 @@ public class MainForm {
 		statusBar.setBorder(null);
 		statusBar.setBounds(0, 511, 852, 21);
 		frmJcardsim.getContentPane().add(statusBar);
-		statusBar.setLayout(new BorderLayout(0, 0));
+		statusBar.setLayout(new BoxLayout(statusBar, BoxLayout.X_AXIS));
 		
 		javax.swing.Box.Filler filler = new Filler((Dimension) null, (Dimension) null, (Dimension) null);
 		filler.setPreferredSize(new Dimension(10, 0));
@@ -93,17 +101,24 @@ public class MainForm {
 		filler.setMaximumSize(new Dimension(10, 32767));
 		filler.setBounds(new Rectangle(0, 0, 10, 0));
 		filler.setAlignmentX(Component.LEFT_ALIGNMENT);
-		statusBar.add(filler, BorderLayout.WEST);
+		statusBar.add(filler);
 		
 		JSeparator separator = new JSeparator();
 		separator.setForeground(Color.LIGHT_GRAY);
 		separator.setBounds(0, 509, 852, 2);
 		frmJcardsim.getContentPane().add(separator);
 		
-		JLabel classFileLabel = new JLabel("Class File: Not selected");
-		classFileLabel.setMinimumSize(new Dimension(800, 14));
+		JLabel classFileLabel = new JLabel("Loaded File: Not loaded");
+		classFileLabel.setMaximumSize(new Dimension(400, 14));
+		classFileLabel.setPreferredSize(new Dimension(400, 14));
+		classFileLabel.setMinimumSize(new Dimension(203, 14));
 		classFileLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		statusBar.add(classFileLabel);
+		
+		JLabel selectedAidLabel = new JLabel("Selected AID: Not selected");
+		selectedAidLabel.setMaximumSize(new Dimension(350, 14));
+		selectedAidLabel.setPreferredSize(new Dimension(350, 14));
+		statusBar.add(selectedAidLabel);
 		
 		JToolBar toolBar = new JToolBar();
 		toolBar.setMinimumSize(new Dimension(10000, 2));
@@ -208,21 +223,35 @@ public class MainForm {
 		
 		comboBoxModel = new DefaultComboBoxModel<String>();
 		aidComboBox = new JComboBox<String>();
+		aidComboBox.setEnabled(false);
 		aidComboBox.setBounds(440, 43, 261, 24);
 		aidComboBox.setModel(comboBoxModel);
 		frmJcardsim.getContentPane().add(aidComboBox);
 		
-		JButton btnSelect = new JButton("Select");
-		btnSelect.addActionListener(new ActionListener() {
+		selectAppBtn = new JButton("Select");
+		selectAppBtn.setEnabled(false);
+		selectAppBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				//apduTextField.setEnabled(true);
-				//sendApduBtn.setEnabled(true);
+				if (comboBoxModel.getSize() > 0)
+				{
+					String aid = comboBoxModel.getSelectedItem().toString();
+					
+					if (simulatorAdapter.selectApplet(aid)) {
+						apduTextField.setEnabled(true);
+						sendApduBtn.setEnabled(true);
+						selectedAidLabel.setText("Selected AID: " + aid);
+						writeLine("AID " + aid + " selected");
+					}
+					else {
+						writeLine("Applet selecting error.");
+					}
+				}
 			}
 		});
-		btnSelect.setPreferredSize(new Dimension(95, 23));
-		btnSelect.setToolTipText("Click to install Applet");
-		btnSelect.setBounds(711, 43, 95, 24);
-		frmJcardsim.getContentPane().add(btnSelect);
+		selectAppBtn.setPreferredSize(new Dimension(95, 23));
+		selectAppBtn.setToolTipText("Click to install Applet");
+		selectAppBtn.setBounds(711, 43, 95, 24);
+		frmJcardsim.getContentPane().add(selectAppBtn);
 	}
 	
 	private void loadApplet(String aid, File appFile) {
@@ -230,6 +259,9 @@ public class MainForm {
 		{
 			aidTextField.setText("");
 			refreshAidCombo();
+			aidComboBox.setEnabled(true);
+			selectAppBtn.setEnabled(true);
+			
 			writeLine("Applet Class Installed: " + classFile.getName() + " (AID: " + aid + ")");
 			writeLine();
 		}

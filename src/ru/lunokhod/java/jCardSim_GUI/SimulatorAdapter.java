@@ -5,9 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import com.licel.jcardsim.base.Simulator;
 import javacard.framework.AID;
 import javacard.framework.Applet;
@@ -19,8 +16,9 @@ import org.apache.bcel.classfile.ClassFormatException;
 
 public class SimulatorAdapter {
 	private Simulator simulator;
-	SCAppClassLoader classLoader = new SCAppClassLoader();
-	ArrayList<AppletDescriptor> applets = new ArrayList<AppletDescriptor>();
+	private SCAppClassLoader classLoader = new SCAppClassLoader();
+	private ArrayList<AppletDescriptor> applets = new ArrayList<AppletDescriptor>();
+	private AppletDescriptor selectedApplet = null;
 	
 	public SimulatorAdapter() {
 		simulator = new Simulator();
@@ -58,6 +56,13 @@ public class SimulatorAdapter {
 				applets.add(new AppletDescriptor(appAid, className, classFile.getPath(), bytes.length));
 				
 				System.out.println("appletClass loaded into Simulator");
+				
+				byte[] s = simulator.selectAppletWithResult(appAid);
+				if (s != null)
+					System.out.println("selectApplet = " + s.toString());
+				else
+					System.out.println("selectApplet = null");
+				
 				return true;
 			}
 			catch (SystemException e) {
@@ -86,6 +91,18 @@ public class SimulatorAdapter {
 		return false;
 	}
 	
+	public boolean selectApplet(String aid) {
+		if (simulator.selectApplet(getAppletDescriptor(aid).getAid())) {
+			selectedApplet = getAppletDescriptor(aid);
+			return true;
+		}
+		return false;
+	}
+	
+	public byte[] selectAppletWithResult(String aid) {
+		return simulator.selectAppletWithResult(AIDUtil.create(aid));
+	}
+	
 	public void reset() {
 		simulator.reset();
 		applets.clear();
@@ -94,6 +111,18 @@ public class SimulatorAdapter {
 	public void resetRuntime() {
 		simulator.resetRuntime();
 		applets.clear();
+	}
+	
+	private AppletDescriptor getAppletDescriptor(String aid) {
+		return getAppletDescriptor(AIDUtil.create(aid));
+	}
+	
+	public AppletDescriptor getAppletDescriptor(AID aid) {
+		for (AppletDescriptor ad : applets) {
+			if (ad.getAid().equals(aid));
+				return ad;
+		}
+		return null;
 	}
 	
 	private JavaClass getFileClassDescriptor(File appFile) {
