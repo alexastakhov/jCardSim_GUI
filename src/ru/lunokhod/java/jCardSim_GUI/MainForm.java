@@ -237,13 +237,16 @@ public class MainForm {
 					String aid = comboBoxModel.getSelectedItem().toString();
 					
 					if (simulatorAdapter.selectApplet(aid)) {
+						AppletDescriptor appDscr = simulatorAdapter.getAppletDescriptor(aid);
+						
 						apduTextField.setEnabled(true);
 						sendApduBtn.setEnabled(true);
 						selectedAidLabel.setText("Selected AID: " + aid);
-						writeLine("AID " + aid + " selected");
+						writeLine("Applet " + appDscr.getClassName() + " [AID:" + aid + "] " + "has been selected");
+						writeLine();
 					}
 					else {
-						writeLine("Applet selecting error.");
+						writeLine("Applet selecting error [AID:" + aid + "]");
 					}
 				}
 			}
@@ -262,7 +265,7 @@ public class MainForm {
 			aidComboBox.setEnabled(true);
 			selectAppBtn.setEnabled(true);
 			
-			writeLine("Applet Class Installed: " + classFile.getName() + " (AID: " + aid + ")");
+			writeLine("Applet Class Installed: " + classFile.getName() + " [AID: " + aid + "]");
 			writeLine();
 		}
 		else

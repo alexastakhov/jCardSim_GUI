@@ -52,7 +52,7 @@ public class SimulatorAdapter {
 		if (appletClass != null) {
 			try
 			{
-				simulator.loadApplet(appAid, appletClass);
+				simulator.installApplet(appAid, appletClass);
 				applets.add(new AppletDescriptor(appAid, className, classFile.getPath(), bytes.length));
 				
 				System.out.println("appletClass loaded into Simulator");
@@ -113,7 +113,7 @@ public class SimulatorAdapter {
 		applets.clear();
 	}
 	
-	private AppletDescriptor getAppletDescriptor(String aid) {
+	public AppletDescriptor getAppletDescriptor(String aid) {
 		return getAppletDescriptor(AIDUtil.create(aid));
 	}
 	
