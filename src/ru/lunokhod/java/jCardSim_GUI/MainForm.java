@@ -24,12 +24,13 @@ import java.awt.Toolkit;
 
 import javax.swing.*;
 import javax.swing.Box.Filler;
+import javax.swing.border.LineBorder;
 
 public class MainForm {
 
 	private JFrame frmJcardsim;
 	private HexUpperCaseField aidTextField;
-	private JTextField apduTextField;
+	private HexUpperCaseField apduTextField;
 	private JButton sendApduBtn;
 	private JButton selectAppBtn;
 	private JTextPane outputTextPane;
@@ -126,6 +127,10 @@ public class MainForm {
 		frmJcardsim.getContentPane().add(toolBar);
 		
 		JButton openFileBtn = new JButton("");
+		openFileBtn.setBorder(new LineBorder(Color.LIGHT_GRAY));
+		openFileBtn.setPreferredSize(new Dimension(29, 29));
+		openFileBtn.setMinimumSize(new Dimension(29, 29));
+		openFileBtn.setMaximumSize(new Dimension(29, 29));
 		openFileBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				JFileChooser fileOpen = new JFileChooser();      
@@ -144,15 +149,61 @@ public class MainForm {
 			}
 		});
 		
-		Filler filler1 = new Box.Filler((Dimension) null, (Dimension) null, (Dimension) null);
-		filler1.setMaximumSize(new Dimension(10, 32767));
-		filler1.setPreferredSize(new Dimension(10, 0));
-		filler1.setMinimumSize(new Dimension(10, 0));
-		filler1.setSize(new Dimension(10, 0));
-		toolBar.add(filler1);
+		toolBar.addSeparator(new Dimension(10, 28));
+		
+		JButton newButton = new JButton("");
+		newButton.setBorder(new LineBorder(Color.LIGHT_GRAY));
+		newButton.setMaximumSize(new Dimension(29, 29));
+		newButton.setMinimumSize(new Dimension(29, 29));
+		newButton.setPreferredSize(new Dimension(29, 29));
+		newButton.setIcon(new ImageIcon(MainForm.class.getResource("/com/sun/java/swing/plaf/windows/icons/File.gif")));
+		newButton.setToolTipText("Create new script");
+		toolBar.add(newButton);
+		
+		toolBar.addSeparator(new Dimension(3, 28));
+		
 		openFileBtn.setToolTipText("Open JavaCard Applet Class File");
 		openFileBtn.setIcon(new ImageIcon(MainForm.class.getResource("/com/sun/java/swing/plaf/windows/icons/NewFolder.gif")));
 		toolBar.add(openFileBtn);
+		
+		toolBar.addSeparator(new Dimension(3, 28));
+		
+		JButton saveButton = new JButton("");
+		saveButton.setBorder(new LineBorder(Color.LIGHT_GRAY));
+		saveButton.setMaximumSize(new Dimension(29, 29));
+		saveButton.setMinimumSize(new Dimension(29, 29));
+		saveButton.setPreferredSize(new Dimension(29, 29));
+		saveButton.setIcon(new ImageIcon(MainForm.class.getResource("/com/sun/java/swing/plaf/windows/icons/FloppyDrive.gif")));
+		saveButton.setToolTipText("Open JavaCard Applet Class File");
+		toolBar.add(saveButton);
+		
+		JSeparator separator1 = new JSeparator(JSeparator.VERTICAL);
+		separator1.setSize(new Dimension(2, 26));
+		separator1.setPreferredSize(new Dimension(2, 26));
+		separator1.setMaximumSize(new Dimension(2, 26));
+		toolBar.addSeparator(new Dimension(6, 28));
+		toolBar.add(separator1);
+		toolBar.addSeparator(new Dimension(6, 28));
+		
+		JButton appListButton = new JButton("");
+		appListButton.setBorder(new LineBorder(Color.LIGHT_GRAY));
+		appListButton.setPreferredSize(new Dimension(29, 29));
+		appListButton.setMinimumSize(new Dimension(29, 29));
+		appListButton.setMaximumSize(new Dimension(29, 29));
+		appListButton.setIcon(new ImageIcon(MainForm.class.getResource("/com/sun/javafx/scene/web/skin/UnorderedListBullets_16x16_JFX.png")));
+		appListButton.setToolTipText("Show loaded applets");
+		toolBar.add(appListButton);
+
+		toolBar.addSeparator(new Dimension(3, 28));
+		
+		JButton restartButton = new JButton("");
+		restartButton.setBorder(new LineBorder(Color.LIGHT_GRAY));
+		restartButton.setPreferredSize(new Dimension(29, 29));
+		restartButton.setMinimumSize(new Dimension(29, 29));
+		restartButton.setMaximumSize(new Dimension(29, 29));
+		restartButton.setIcon(new ImageIcon(MainForm.class.getResource("/com/sun/javafx/scene/web/skin/Redo_16x16_JFX.png")));
+		restartButton.setToolTipText("Restart JavaCard Runtime");
+		toolBar.add(restartButton);
 		
 		JLabel lblNewLabel = new JLabel("AID");
 		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
@@ -177,7 +228,7 @@ public class MainForm {
 		outputTextPane.setEditable(false);
 		scrollPane.setViewportView(outputTextPane);
 		
-		apduTextField = new JTextField();
+		apduTextField = new HexUpperCaseField();
 		apduTextField.setEnabled(false);
 		apduTextField.setFont(new Font("Courier New", Font.PLAIN, 12));
 		apduTextField.setBounds(10, 474, 719, 24);
