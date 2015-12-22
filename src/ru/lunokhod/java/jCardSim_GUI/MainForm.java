@@ -205,6 +205,17 @@ public class MainForm {
 		restartButton.setToolTipText("Restart JavaCard Runtime");
 		toolBar.add(restartButton);
 		
+		toolBar.addSeparator(new Dimension(3, 28));
+		
+		JButton powerButton = new JButton("");
+		powerButton.setBorder(new LineBorder(Color.LIGHT_GRAY));
+		powerButton.setPreferredSize(new Dimension(29, 29));
+		powerButton.setMinimumSize(new Dimension(29, 29));
+		powerButton.setMaximumSize(new Dimension(29, 29));
+		powerButton.setIcon(new ImageIcon(MainForm.class.getResource("/com/sun/javafx/scene/web/skin/Redo_16x16_JFX.png")));
+		powerButton.setToolTipText("Restart JavaCard Runtime");
+		toolBar.add(powerButton);
+		
 		JLabel lblNewLabel = new JLabel("AID");
 		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		lblNewLabel.setBounds(24, 48, 27, 14);
