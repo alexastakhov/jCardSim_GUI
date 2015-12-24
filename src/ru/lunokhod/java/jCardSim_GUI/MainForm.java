@@ -25,6 +25,9 @@ import java.awt.Toolkit;
 import javax.swing.*;
 import javax.swing.Box.Filler;
 import javax.swing.border.LineBorder;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.EmptyBorder;
 
 public class MainForm {
 
@@ -122,12 +125,16 @@ public class MainForm {
 		statusBar.add(selectedAidLabel);
 		
 		JToolBar toolBar = new JToolBar();
+		toolBar.setSize(new Dimension(0, 19));
+		toolBar.setPreferredSize(new Dimension(15, 19));
+		toolBar.setMaximumSize(new Dimension(15, 19));
 		toolBar.setMinimumSize(new Dimension(10000, 2));
 		toolBar.setBounds(0, 0, 852, 32);
 		frmJcardsim.getContentPane().add(toolBar);
 		
 		JButton openFileBtn = new JButton("");
-		openFileBtn.setBorder(new LineBorder(Color.LIGHT_GRAY));
+		openFileBtn.setFocusable(false);
+		openFileBtn.setBorder(null);
 		openFileBtn.setPreferredSize(new Dimension(29, 29));
 		openFileBtn.setMinimumSize(new Dimension(29, 29));
 		openFileBtn.setMaximumSize(new Dimension(29, 29));
@@ -152,28 +159,30 @@ public class MainForm {
 		toolBar.addSeparator(new Dimension(10, 28));
 		
 		JButton newButton = new JButton("");
-		newButton.setBorder(new LineBorder(Color.LIGHT_GRAY));
+		newButton.setFocusable(false);
+		newButton.setBorder(null);
 		newButton.setMaximumSize(new Dimension(29, 29));
 		newButton.setMinimumSize(new Dimension(29, 29));
 		newButton.setPreferredSize(new Dimension(29, 29));
-		newButton.setIcon(new ImageIcon(MainForm.class.getResource("/com/sun/java/swing/plaf/windows/icons/File.gif")));
+		newButton.setIcon(new ImageIcon("C:\\Users\\alex\\eclipse_jc_workspace\\jCardSim_GUI\\icons\\document.png"));
 		newButton.setToolTipText("Create new script");
 		toolBar.add(newButton);
 		
 		toolBar.addSeparator(new Dimension(3, 28));
 		
 		openFileBtn.setToolTipText("Open JavaCard Applet Class File");
-		openFileBtn.setIcon(new ImageIcon(MainForm.class.getResource("/com/sun/java/swing/plaf/windows/icons/NewFolder.gif")));
+		openFileBtn.setIcon(new ImageIcon("C:\\Users\\alex\\eclipse_jc_workspace\\jCardSim_GUI\\icons\\folder-horizontal-open.png"));
 		toolBar.add(openFileBtn);
 		
 		toolBar.addSeparator(new Dimension(3, 28));
 		
 		JButton saveButton = new JButton("");
-		saveButton.setBorder(new LineBorder(Color.LIGHT_GRAY));
+		saveButton.setFocusable(false);
+		saveButton.setBorder(null);
 		saveButton.setMaximumSize(new Dimension(29, 29));
 		saveButton.setMinimumSize(new Dimension(29, 29));
 		saveButton.setPreferredSize(new Dimension(29, 29));
-		saveButton.setIcon(new ImageIcon(MainForm.class.getResource("/com/sun/java/swing/plaf/windows/icons/FloppyDrive.gif")));
+		saveButton.setIcon(new ImageIcon("C:\\Users\\alex\\eclipse_jc_workspace\\jCardSim_GUI\\icons\\disk.png"));
 		saveButton.setToolTipText("Open JavaCard Applet Class File");
 		toolBar.add(saveButton);
 		
@@ -186,33 +195,36 @@ public class MainForm {
 		toolBar.addSeparator(new Dimension(6, 28));
 		
 		JButton appListButton = new JButton("");
-		appListButton.setBorder(new LineBorder(Color.LIGHT_GRAY));
+		appListButton.setFocusable(false);
+		appListButton.setBorder(null);
 		appListButton.setPreferredSize(new Dimension(29, 29));
 		appListButton.setMinimumSize(new Dimension(29, 29));
 		appListButton.setMaximumSize(new Dimension(29, 29));
-		appListButton.setIcon(new ImageIcon(MainForm.class.getResource("/com/sun/javafx/scene/web/skin/UnorderedListBullets_16x16_JFX.png")));
+		appListButton.setIcon(new ImageIcon("C:\\Users\\alex\\eclipse_jc_workspace\\jCardSim_GUI\\icons\\credit-card-green.png"));
 		appListButton.setToolTipText("Show loaded applets");
 		toolBar.add(appListButton);
 
 		toolBar.addSeparator(new Dimension(3, 28));
 		
 		JButton restartButton = new JButton("");
-		restartButton.setBorder(new LineBorder(Color.LIGHT_GRAY));
+		restartButton.setFocusable(false);
+		restartButton.setBorder(null);
 		restartButton.setPreferredSize(new Dimension(29, 29));
 		restartButton.setMinimumSize(new Dimension(29, 29));
 		restartButton.setMaximumSize(new Dimension(29, 29));
-		restartButton.setIcon(new ImageIcon(MainForm.class.getResource("/com/sun/javafx/scene/web/skin/Redo_16x16_JFX.png")));
+		restartButton.setIcon(new ImageIcon("C:\\Users\\alex\\eclipse_jc_workspace\\jCardSim_GUI\\icons\\arrow_refresh.png"));
 		restartButton.setToolTipText("Restart JavaCard Runtime");
 		toolBar.add(restartButton);
 		
 		toolBar.addSeparator(new Dimension(3, 28));
 		
 		JButton powerButton = new JButton("");
-		powerButton.setBorder(new LineBorder(Color.LIGHT_GRAY));
+		powerButton.setFocusable(false);
+		powerButton.setBorder(null);
 		powerButton.setPreferredSize(new Dimension(29, 29));
 		powerButton.setMinimumSize(new Dimension(29, 29));
 		powerButton.setMaximumSize(new Dimension(29, 29));
-		powerButton.setIcon(new ImageIcon(MainForm.class.getResource("/com/sun/javafx/scene/web/skin/Redo_16x16_JFX.png")));
+		powerButton.setIcon(new ImageIcon("C:\\Users\\alex\\eclipse_jc_workspace\\jCardSim_GUI\\icons\\lightning.png"));
 		powerButton.setToolTipText("Restart JavaCard Runtime");
 		toolBar.add(powerButton);
 		
