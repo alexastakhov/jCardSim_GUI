@@ -12,6 +12,7 @@ import com.licel.jcardsim.utils.AIDUtil;
 
 import java.awt.Dimension;
 import javax.swing.JPanel;
+import javax.swing.border.LineBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
@@ -21,13 +22,10 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
-
 import javax.swing.*;
 import javax.swing.Box.Filler;
-import javax.swing.border.LineBorder;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.EmptyBorder;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class MainForm {
 
@@ -129,10 +127,20 @@ public class MainForm {
 		toolBar.setPreferredSize(new Dimension(15, 19));
 		toolBar.setMaximumSize(new Dimension(15, 19));
 		toolBar.setMinimumSize(new Dimension(10000, 2));
-		toolBar.setBounds(0, 0, 852, 32);
+		toolBar.setBounds(0, 0, 852, 37);
 		frmJcardsim.getContentPane().add(toolBar);
 		
 		JButton openFileBtn = new JButton("");
+		openFileBtn.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent arg0) {
+				openFileBtn.setBorder(new LineBorder(Color.GRAY));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				openFileBtn.setBorder(null);
+			}
+		});
 		openFileBtn.setFocusable(false);
 		openFileBtn.setBorder(null);
 		openFileBtn.setPreferredSize(new Dimension(29, 29));
@@ -159,6 +167,16 @@ public class MainForm {
 		toolBar.addSeparator(new Dimension(10, 28));
 		
 		JButton newButton = new JButton("");
+		newButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent arg0) {
+				newButton.setBorder(new LineBorder(Color.GRAY));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				newButton.setBorder(null);
+			}
+		});
 		newButton.setFocusable(false);
 		newButton.setBorder(null);
 		newButton.setMaximumSize(new Dimension(29, 29));
@@ -170,20 +188,30 @@ public class MainForm {
 		
 		toolBar.addSeparator(new Dimension(3, 28));
 		
-		openFileBtn.setToolTipText("Open JavaCard Applet Class File");
+		openFileBtn.setToolTipText("Open JavaCard Applet class file");
 		openFileBtn.setIcon(new ImageIcon("C:\\Users\\alex\\eclipse_jc_workspace\\jCardSim_GUI\\icons\\folder-horizontal-open.png"));
 		toolBar.add(openFileBtn);
 		
 		toolBar.addSeparator(new Dimension(3, 28));
 		
 		JButton saveButton = new JButton("");
+		saveButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent arg0) {
+				saveButton.setBorder(new LineBorder(Color.GRAY));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				saveButton.setBorder(null);
+			}
+		});
 		saveButton.setFocusable(false);
 		saveButton.setBorder(null);
 		saveButton.setMaximumSize(new Dimension(29, 29));
 		saveButton.setMinimumSize(new Dimension(29, 29));
 		saveButton.setPreferredSize(new Dimension(29, 29));
 		saveButton.setIcon(new ImageIcon("C:\\Users\\alex\\eclipse_jc_workspace\\jCardSim_GUI\\icons\\disk.png"));
-		saveButton.setToolTipText("Open JavaCard Applet Class File");
+		saveButton.setToolTipText("Save APDU script file");
 		toolBar.add(saveButton);
 		
 		JSeparator separator1 = new JSeparator(JSeparator.VERTICAL);
@@ -195,18 +223,38 @@ public class MainForm {
 		toolBar.addSeparator(new Dimension(6, 28));
 		
 		JButton appListButton = new JButton("");
+		appListButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent arg0) {
+				appListButton.setBorder(new LineBorder(Color.GRAY));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				appListButton.setBorder(null);
+			}
+		});
 		appListButton.setFocusable(false);
 		appListButton.setBorder(null);
 		appListButton.setPreferredSize(new Dimension(29, 29));
 		appListButton.setMinimumSize(new Dimension(29, 29));
 		appListButton.setMaximumSize(new Dimension(29, 29));
 		appListButton.setIcon(new ImageIcon("C:\\Users\\alex\\eclipse_jc_workspace\\jCardSim_GUI\\icons\\credit-card-green.png"));
-		appListButton.setToolTipText("Show loaded applets");
+		appListButton.setToolTipText("Show loaded applets and virtual JCRE info");
 		toolBar.add(appListButton);
 
 		toolBar.addSeparator(new Dimension(3, 28));
 		
 		JButton restartButton = new JButton("");
+		restartButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent arg0) {
+				restartButton.setBorder(new LineBorder(Color.GRAY));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				restartButton.setBorder(null);
+			}
+		});
 		restartButton.setFocusable(false);
 		restartButton.setBorder(null);
 		restartButton.setPreferredSize(new Dimension(29, 29));
@@ -219,31 +267,41 @@ public class MainForm {
 		toolBar.addSeparator(new Dimension(3, 28));
 		
 		JButton powerButton = new JButton("");
+		powerButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent arg0) {
+				powerButton.setBorder(new LineBorder(Color.GRAY));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				powerButton.setBorder(null);
+			}
+		});
 		powerButton.setFocusable(false);
 		powerButton.setBorder(null);
 		powerButton.setPreferredSize(new Dimension(29, 29));
 		powerButton.setMinimumSize(new Dimension(29, 29));
 		powerButton.setMaximumSize(new Dimension(29, 29));
 		powerButton.setIcon(new ImageIcon("C:\\Users\\alex\\eclipse_jc_workspace\\jCardSim_GUI\\icons\\lightning.png"));
-		powerButton.setToolTipText("Restart JavaCard Runtime");
+		powerButton.setToolTipText("Simulated card power On/Off");
 		toolBar.add(powerButton);
 		
 		JLabel lblNewLabel = new JLabel("AID");
 		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		lblNewLabel.setBounds(24, 48, 27, 14);
+		lblNewLabel.setBounds(24, 57, 27, 14);
 		frmJcardsim.getContentPane().add(lblNewLabel);
 		
 		aidTextField = new HexUpperCaseField();
 		aidTextField.setToolTipText("Enter AID");
 		aidTextField.setFont(new Font("Courier New", Font.PLAIN, 12));
-		aidTextField.setBounds(51, 43, 243, 24);
+		aidTextField.setBounds(51, 52, 243, 24);
 		frmJcardsim.getContentPane().add(aidTextField);
 		aidTextField.setMaxLenght(32);
 		aidTextField.setColumns(10);
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		scrollPane.setBounds(10, 78, 832, 385);
+		scrollPane.setBounds(10, 90, 832, 373);
 		frmJcardsim.getContentPane().add(scrollPane);
 		
 		outputTextPane = new JTextPane();
@@ -292,13 +350,13 @@ public class MainForm {
 				loadApplet(aid, classFile);
 			}
 		});
-		loadAppletBtn.setBounds(304, 43, 95, 24);
+		loadAppletBtn.setBounds(304, 52, 95, 24);
 		frmJcardsim.getContentPane().add(loadAppletBtn);
 		
 		comboBoxModel = new DefaultComboBoxModel<String>();
 		aidComboBox = new JComboBox<String>();
 		aidComboBox.setEnabled(false);
-		aidComboBox.setBounds(440, 43, 261, 24);
+		aidComboBox.setBounds(440, 52, 261, 24);
 		aidComboBox.setModel(comboBoxModel);
 		frmJcardsim.getContentPane().add(aidComboBox);
 		
@@ -327,7 +385,7 @@ public class MainForm {
 		});
 		selectAppBtn.setPreferredSize(new Dimension(95, 23));
 		selectAppBtn.setToolTipText("Click to install Applet");
-		selectAppBtn.setBounds(711, 43, 95, 24);
+		selectAppBtn.setBounds(711, 52, 95, 24);
 		frmJcardsim.getContentPane().add(selectAppBtn);
 	}
 	
