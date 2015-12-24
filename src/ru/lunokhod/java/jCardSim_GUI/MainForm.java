@@ -26,6 +26,7 @@ import javax.swing.*;
 import javax.swing.Box.Filler;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.SystemColor;
 
 public class MainForm {
 
@@ -189,7 +190,7 @@ public class MainForm {
 		toolBar.addSeparator(new Dimension(3, 28));
 		
 		openFileBtn.setToolTipText("Open JavaCard Applet class file");
-		openFileBtn.setIcon(new ImageIcon("C:\\Users\\alex\\eclipse_jc_workspace\\jCardSim_GUI\\icons\\folder-horizontal-open.png"));
+		openFileBtn.setIcon(new ImageIcon("C:\\Users\\alex\\eclipse_jc_workspace\\jCardSim_GUI\\icons\\folder-open.png"));
 		toolBar.add(openFileBtn);
 		
 		toolBar.addSeparator(new Dimension(3, 28));
@@ -205,13 +206,36 @@ public class MainForm {
 				saveButton.setBorder(null);
 			}
 		});
+		
+		JButton openScriptFileBtn = new JButton("");
+		openScriptFileBtn.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				openScriptFileBtn.setBorder(new LineBorder(Color.GRAY));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				openScriptFileBtn.setBorder(null);
+			}
+		});
+		openScriptFileBtn.setIcon(new ImageIcon("C:\\Users\\alex\\eclipse_jc_workspace\\jCardSim_GUI\\icons\\folder-open-document-text.png"));
+		openScriptFileBtn.setToolTipText("Open APDU script file");
+		openScriptFileBtn.setPreferredSize(new Dimension(29, 29));
+		openScriptFileBtn.setMinimumSize(new Dimension(29, 29));
+		openScriptFileBtn.setMaximumSize(new Dimension(29, 29));
+		openScriptFileBtn.setFocusable(false);
+		openScriptFileBtn.setBorder(null);
+		toolBar.add(openScriptFileBtn);
+		
+		toolBar.addSeparator(new Dimension(3, 28));
+		
 		saveButton.setFocusable(false);
 		saveButton.setBorder(null);
 		saveButton.setMaximumSize(new Dimension(29, 29));
 		saveButton.setMinimumSize(new Dimension(29, 29));
 		saveButton.setPreferredSize(new Dimension(29, 29));
 		saveButton.setIcon(new ImageIcon("C:\\Users\\alex\\eclipse_jc_workspace\\jCardSim_GUI\\icons\\disk.png"));
-		saveButton.setToolTipText("Save APDU script file");
+		saveButton.setToolTipText("Save printout log file");
 		toolBar.add(saveButton);
 		
 		JSeparator separator1 = new JSeparator(JSeparator.VERTICAL);
@@ -245,6 +269,12 @@ public class MainForm {
 		toolBar.addSeparator(new Dimension(3, 28));
 		
 		JButton restartButton = new JButton("");
+		restartButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				simulatorAdapter.resetRuntime();
+				writeLine("Restart JavaCard Runtime performed (!)");
+			}
+		});
 		restartButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent arg0) {
@@ -267,6 +297,12 @@ public class MainForm {
 		toolBar.addSeparator(new Dimension(3, 28));
 		
 		JButton powerButton = new JButton("");
+		powerButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				simulatorAdapter.reset();
+				writeLine("Simulated card power Off-On performed (!)");
+			}
+		});
 		powerButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent arg0) {
@@ -305,6 +341,8 @@ public class MainForm {
 		frmJcardsim.getContentPane().add(scrollPane);
 		
 		outputTextPane = new JTextPane();
+		outputTextPane.setSelectedTextColor(SystemColor.desktop);
+		outputTextPane.setSelectionColor(SystemColor.inactiveCaption);
 		outputTextPane.setFont(new Font("Courier New", Font.PLAIN, 12));
 		outputTextPane.setEditable(false);
 		scrollPane.setViewportView(outputTextPane);
