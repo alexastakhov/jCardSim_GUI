@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import com.jgoodies.looks.plastic.Plastic3DLookAndFeel;
 import com.jgoodies.looks.plastic.theme.ExperienceRoyale;
 import com.licel.jcardsim.utils.AIDUtil;
-
 import java.awt.Dimension;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
