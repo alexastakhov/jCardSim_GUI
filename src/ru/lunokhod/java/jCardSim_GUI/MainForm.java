@@ -38,8 +38,10 @@ public class MainForm {
 	private JComboBox<String> aidComboBox;
 	private SimulatorAdapter simulatorAdapter;
 	private File classFile;
-	DefaultComboBoxModel<String> comboBoxModel;
-
+	private DefaultComboBoxModel<String> comboBoxModel;
+	private AboutDialog aboutDialog;
+	ScriptFrame scriptFrame;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -71,6 +73,8 @@ public class MainForm {
 	public MainForm() {
 		classFile = null;
 		simulatorAdapter = new SimulatorAdapter();
+		aboutDialog = new AboutDialog();
+		scriptFrame = new ScriptFrame();
 		initialize();
 	}
 
@@ -167,6 +171,11 @@ public class MainForm {
 		toolBar.addSeparator(new Dimension(10, 28));
 		
 		JButton newButton = new JButton("");
+		newButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				scriptFrame.setVisible(true);
+			}
+		});
 		newButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent arg0) {
@@ -320,6 +329,35 @@ public class MainForm {
 		powerButton.setIcon(new ImageIcon("C:\\Users\\alex\\eclipse_jc_workspace\\jCardSim_GUI\\icons\\lightning.png"));
 		powerButton.setToolTipText("Simulated card power On/Off");
 		toolBar.add(powerButton);
+		
+		toolBar.add(Box.createHorizontalGlue());
+		
+		JButton infoButton = new JButton("");
+		infoButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				aboutDialog.setVisible(true);
+			}
+		});
+		infoButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent arg0) {
+				infoButton.setBorder(new LineBorder(Color.GRAY));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				infoButton.setBorder(null);
+			}
+		});
+		infoButton.setIcon(new ImageIcon("C:\\Users\\alex\\eclipse_jc_workspace\\jCardSim_GUI\\icons\\information.png"));
+		infoButton.setToolTipText("About jCardSim GUI");
+		infoButton.setPreferredSize(new Dimension(29, 29));
+		infoButton.setMinimumSize(new Dimension(29, 29));
+		infoButton.setMaximumSize(new Dimension(29, 29));
+		infoButton.setFocusable(false);
+		infoButton.setBorder(null);
+		toolBar.add(infoButton);
+		
+		toolBar.addSeparator(new Dimension(10, 28));
 		
 		JLabel lblNewLabel = new JLabel("AID");
 		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
