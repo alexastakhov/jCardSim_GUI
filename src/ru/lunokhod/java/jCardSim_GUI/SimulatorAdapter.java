@@ -4,7 +4,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.ArrayList;
+import javax.smartcardio.CommandAPDU;
+import javax.smartcardio.ResponseAPDU;
 import com.licel.jcardsim.base.Simulator;
 import javacard.framework.AID;
 import javacard.framework.Applet;
@@ -103,14 +106,18 @@ public class SimulatorAdapter {
 		return simulator.selectAppletWithResult(AIDUtil.create(aid));
 	}
 	
-	public void reset() {
+	public byte[] reset() {
 		simulator.reset();
 		applets.clear();
+		
+		return simulator.getATR();
 	}
 	
-	public void resetRuntime() {
+	public byte[] resetRuntime() {
 		simulator.resetRuntime();
 		applets.clear();
+		
+		return simulator.getATR();
 	}
 	
 	public AppletDescriptor getAppletDescriptor(String aid) {
@@ -123,6 +130,18 @@ public class SimulatorAdapter {
 				return ad;
 		}
 		return null;
+	}
+	
+	public byte[] sendAPDU(byte[] apdu) {
+		//ResponseAPDU response;
+		byte[] response = null;
+		//CommandAPDU command;
+		
+		if (apdu.length >= 4) {
+			response = simulator.transmitCommand(apdu);
+		} 
+		
+		return response;
 	}
 	
 	private JavaClass getFileClassDescriptor(File appFile) {

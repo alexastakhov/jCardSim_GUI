@@ -40,7 +40,8 @@ public class MainForm {
 	private File classFile;
 	private DefaultComboBoxModel<String> comboBoxModel;
 	private AboutDialog aboutDialog;
-	ScriptFrame scriptFrame;
+	private JLabel selectedAidLabel;
+	private ScriptFrame scriptFrame;
 	
 	/**
 	 * Launch the application.
@@ -121,7 +122,7 @@ public class MainForm {
 		classFileLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		statusBar.add(classFileLabel);
 		
-		JLabel selectedAidLabel = new JLabel("Selected AID: Not selected");
+		selectedAidLabel = new JLabel("Selected AID: Not selected");
 		selectedAidLabel.setMaximumSize(new Dimension(350, 14));
 		selectedAidLabel.setPreferredSize(new Dimension(350, 14));
 		statusBar.add(selectedAidLabel);
@@ -279,8 +280,10 @@ public class MainForm {
 		JButton restartButton = new JButton("");
 		restartButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				simulatorAdapter.resetRuntime();
+				byte[] atr = simulatorAdapter.resetRuntime();
+				writeLine();
 				writeLine("Restart JavaCard Runtime performed (!)");
+				writeLine("ATR = " + bytesToString(atr, true));
 			}
 		});
 		restartButton.addMouseListener(new MouseAdapter() {
@@ -307,8 +310,10 @@ public class MainForm {
 		JButton powerButton = new JButton("");
 		powerButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				simulatorAdapter.reset();
+				byte[] atr = simulatorAdapter.reset();
+				writeLine();
 				writeLine("Simulated card power Off-On performed (!)");
+				writeLine("ATR = " + bytesToString(atr, true));
 			}
 		});
 		powerButton.addMouseListener(new MouseAdapter() {
@@ -392,6 +397,11 @@ public class MainForm {
 		apduTextField.setColumns(10);
 		
 		sendApduBtn = new JButton("Send APDU");
+		sendApduBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				sendAPDU();
+			}
+		});
 		sendApduBtn.setEnabled(false);
 		sendApduBtn.setBounds(737, 474, 105, 24);
 		frmJcardsim.getContentPane().add(sendApduBtn);
@@ -400,29 +410,7 @@ public class MainForm {
 		loadAppletBtn.setToolTipText("Click to install Applet");
 		loadAppletBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				String aid = aidTextField.getText();
-				
-				if (classFile == null) {
-					JOptionPane.showMessageDialog(new JFrame(), "Load Applet Class File", "Error", JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-				
-				if (aid.length() < 10) {
-					JOptionPane.showMessageDialog(new JFrame(), "AID has to contain 5 or more bytes.", "Warning", JOptionPane.WARNING_MESSAGE);
-					return;
-				}
-				
-				if (aid.length() % 2 != 0) {
-					JOptionPane.showMessageDialog(new JFrame(), "AID has to contain even number of symbols.", "Warning", JOptionPane.WARNING_MESSAGE);
-					return;
-				}
-				
-				if (simulatorAdapter.isAppletInstalled(aid)) {
-					JOptionPane.showMessageDialog(new JFrame(), "Applet with same AID is already installed.", "Warning", JOptionPane.WARNING_MESSAGE);
-					return;
-				}
-				
-				loadApplet(aid, classFile);
+				loadApplet(aidTextField.getText(), classFile);
 			}
 		});
 		loadAppletBtn.setBounds(304, 52, 95, 24);
@@ -439,23 +427,7 @@ public class MainForm {
 		selectAppBtn.setEnabled(false);
 		selectAppBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				if (comboBoxModel.getSize() > 0)
-				{
-					String aid = comboBoxModel.getSelectedItem().toString();
-					
-					if (simulatorAdapter.selectApplet(aid)) {
-						AppletDescriptor appDscr = simulatorAdapter.getAppletDescriptor(aid);
-						
-						apduTextField.setEnabled(true);
-						sendApduBtn.setEnabled(true);
-						selectedAidLabel.setText("Selected AID: " + aid);
-						writeLine("Applet " + appDscr.getClassName() + " [AID:" + aid + "] " + "has been selected");
-						writeLine();
-					}
-					else {
-						writeLine("Applet selecting error [AID:" + aid + "]");
-					}
-				}
+				selectApplet();
 			}
 		});
 		selectAppBtn.setPreferredSize(new Dimension(95, 23));
@@ -464,7 +436,65 @@ public class MainForm {
 		frmJcardsim.getContentPane().add(selectAppBtn);
 	}
 	
+	private void sendAPDU() {
+		int len = apduTextField.getText().length();
+		byte[] response;
+		
+		if (len < 8) {
+			JOptionPane.showMessageDialog(new JFrame(), "APDU has to contain morethan 4 bytes.", "Warning", JOptionPane.WARNING_MESSAGE);
+		}
+		
+		if (len % 2 != 0) {
+			JOptionPane.showMessageDialog(new JFrame(), "APDU has to contain even number of symbols.", "Warning", JOptionPane.WARNING_MESSAGE);
+			return;
+		}
+			
+		response = simulatorAdapter.sendAPDU(stringToBytes(apduTextField.getText()));
+		writeLine("Sent APDU = " + bytesToString(stringToBytes(apduTextField.getText()), true));
+		writeLine("Card Response = " + bytesToString(response, true));
+	}
+	
+	private void selectApplet() {
+		if (comboBoxModel.getSize() > 0)
+		{
+			String aid = comboBoxModel.getSelectedItem().toString();
+		
+			if (simulatorAdapter.selectApplet(aid)) {
+				AppletDescriptor appDscr = simulatorAdapter.getAppletDescriptor(aid);
+			
+				apduTextField.setEnabled(true);
+				sendApduBtn.setEnabled(true);
+				selectedAidLabel.setText("Selected AID: " + aid);
+				writeLine("Applet " + appDscr.getClassName() + " [AID:" + aid + "] " + "has been selected");
+				writeLine();
+			}
+			else {
+				writeLine("Applet selecting error [AID:" + aid + "]");
+			}
+		}
+	}
+	
 	private void loadApplet(String aid, File appFile) {
+		if (classFile == null) {
+			JOptionPane.showMessageDialog(new JFrame(), "Load Applet Class File", "Error", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		
+		if (aid.length() < 10) {
+			JOptionPane.showMessageDialog(new JFrame(), "AID has to contain 5 or more bytes.", "Warning", JOptionPane.WARNING_MESSAGE);
+			return;
+		}
+		
+		if (aid.length() % 2 != 0) {
+			JOptionPane.showMessageDialog(new JFrame(), "AID has to contain even number of symbols.", "Warning", JOptionPane.WARNING_MESSAGE);
+			return;
+		}
+		
+		if (simulatorAdapter.isAppletInstalled(aid)) {
+			JOptionPane.showMessageDialog(new JFrame(), "Applet with same AID is already installed.", "Warning", JOptionPane.WARNING_MESSAGE);
+			return;
+		}
+		
 		if (simulatorAdapter.installApplet(aid, appFile))
 		{
 			aidTextField.setText("");
@@ -512,34 +542,57 @@ public class MainForm {
 	private String bytesToString(byte[] bytes, boolean insertSpace) {
 		StringBuilder sb = new StringBuilder();
 		
-		for (int i = 0; i < bytes.length; i++) {
-			sb.append(toHexDigit((byte)((bytes[i] & 0xF0) >>> 4)));
-			sb.append(toHexDigit((byte)(bytes[i] & 0xF)));
-			if (insertSpace)
+		if (bytes != null) {
+			for (int i = 0; i < bytes.length; i++) {
+				sb.append(String.format("%02X", bytes[i]));
+				if (insertSpace)
 				sb.append(" ");
+			}
 		}
-		
+		else {
+			sb.append("null");
+		}
 		return sb.toString();
 	}
 	
-	private String toHexDigit(byte b) {
-		switch (b) {
-			case 1 : return "1";
-			case 2 : return "2";
-			case 3 : return "3";
-			case 4 : return "4";
-			case 5 : return "5";
-			case 6 : return "6";
-			case 7 : return "7";
-			case 8 : return "8";
-			case 9 : return "9";
-			case 10 : return "A";
-			case 11 : return "B";
-			case 12 : return "C";
-			case 13 : return "D";
-			case 14 : return "E";
-			case 15 : return "F";
-			default: return "0";
-		}
-	}
+    private static byte[] stringToBytes(String bytes) {
+    	byte[] bArr;
+    	
+    	bytes = bytes.replace(" ", "");
+    	
+    	if (bytes == null || bytes.length() == 0)
+    		return new byte[] {};
+    		
+    	if (bytes.length() % 2 != 0)
+    		bytes += "0";
+    	
+    	bArr = new byte[bytes.length() / 2];
+    	for (int i = 0; i < bArr.length; i++)
+    	{
+    		bArr[i] = (byte)((charCodeToByte(bytes.charAt(i * 2)) << 4) & 0xF0 | charCodeToByte(bytes.charAt(i * 2 + 1))); 
+    	}
+    	
+    	return bArr;
+    }
+    
+    private static byte charCodeToByte(char c) {
+    	switch (c) {
+    		case '1' : return 1;
+    		case '2' : return 2;
+    		case '3' : return 3;
+    		case '4' : return 4;
+    		case '5' : return 5;
+    		case '6' : return 6;
+    		case '7' : return 7;
+    		case '8' : return 8;
+    		case '9' : return 9;
+    		case 'A' : return 10;
+    		case 'B' : return 11;
+    		case 'C' : return 12;
+    		case 'D' : return 13;
+    		case 'E' : return 14;
+    		case 'F' : return 15;
+    		default : return 0;
+    	}
+    }
 }
