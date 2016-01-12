@@ -126,7 +126,7 @@ public class SimulatorAdapter {
 	
 	public AppletDescriptor getAppletDescriptor(AID aid) {
 		for (AppletDescriptor ad : applets) {
-			if (ad.getAid().equals(aid));
+			if (aid.equals(ad.getAid()))
 				return ad;
 		}
 		return null;

@@ -123,6 +123,12 @@ public final class AIDUtil {
     	
     	return bytes;
     }
+    
+    public static boolean compare(AID a, AID b) {
+    	if (a.toString() == b.toString())
+    		return true;
+    	return false;
+    }
 
     /**
      * Convert AID to hex-string

@@ -12,6 +12,8 @@ import javax.swing.JToolBar;
 import javax.swing.JButton;
 import java.awt.Rectangle;
 import java.awt.Font;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class ScriptFrame extends JFrame {
 
@@ -26,7 +28,6 @@ public class ScriptFrame extends JFrame {
 	public ScriptFrame() {
 		setTitle("jCardSim Script Editor");
 		setBounds(100, 100, 948, 533);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		getContentPane().setLayout(new BorderLayout(0, 0));
 		
 		JPanel panel = new JPanel();
@@ -66,6 +67,10 @@ public class ScriptFrame extends JFrame {
 		button.setFocusable(false);
 		button.setBorder(null);
 		toolBar.add(button);
+	}
+	
+	private void hideFrame() {
+		this.setVisible(false);
 	}
 
 }

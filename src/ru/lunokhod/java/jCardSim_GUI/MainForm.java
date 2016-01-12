@@ -92,13 +92,13 @@ public class MainForm {
 		frmJcardsim = new JFrame();
 		frmJcardsim.setResizable(false);
 		frmJcardsim.setTitle("jCardSim GUI 1.0");
-		frmJcardsim.setBounds(locationX, locationY, sizeWidth, sizeHeight);
+		frmJcardsim.setBounds(locationX, locationY, 968, 617);
 		frmJcardsim.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmJcardsim.getContentPane().setLayout(null);
 		
 		JPanel statusBar = new JPanel();
 		statusBar.setBorder(null);
-		statusBar.setBounds(0, 511, 852, 21);
+		statusBar.setBounds(0, 567, 962, 21);
 		frmJcardsim.getContentPane().add(statusBar);
 		statusBar.setLayout(new BoxLayout(statusBar, BoxLayout.X_AXIS));
 		
@@ -112,7 +112,7 @@ public class MainForm {
 		
 		JSeparator separator = new JSeparator();
 		separator.setForeground(Color.LIGHT_GRAY);
-		separator.setBounds(0, 509, 852, 2);
+		separator.setBounds(0, 565, 962, 2);
 		frmJcardsim.getContentPane().add(separator);
 		
 		JLabel classFileLabel = new JLabel("Loaded File: Not loaded");
@@ -132,7 +132,7 @@ public class MainForm {
 		toolBar.setPreferredSize(new Dimension(15, 19));
 		toolBar.setMaximumSize(new Dimension(15, 19));
 		toolBar.setMinimumSize(new Dimension(10000, 2));
-		toolBar.setBounds(0, 0, 852, 37);
+		toolBar.setBounds(0, 0, 962, 37);
 		frmJcardsim.getContentPane().add(toolBar);
 		
 		JButton openFileBtn = new JButton("");
@@ -379,7 +379,7 @@ public class MainForm {
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		scrollPane.setBounds(10, 90, 832, 373);
+		scrollPane.setBounds(10, 90, 942, 425);
 		frmJcardsim.getContentPane().add(scrollPane);
 		
 		outputTextPane = new JTextPane();
@@ -392,7 +392,7 @@ public class MainForm {
 		apduTextField = new HexUpperCaseField();
 		apduTextField.setEnabled(false);
 		apduTextField.setFont(new Font("Courier New", Font.PLAIN, 12));
-		apduTextField.setBounds(10, 474, 719, 24);
+		apduTextField.setBounds(10, 528, 827, 24);
 		frmJcardsim.getContentPane().add(apduTextField);
 		apduTextField.setColumns(10);
 		
@@ -403,7 +403,7 @@ public class MainForm {
 			}
 		});
 		sendApduBtn.setEnabled(false);
-		sendApduBtn.setBounds(737, 474, 105, 24);
+		sendApduBtn.setBounds(847, 528, 105, 24);
 		frmJcardsim.getContentPane().add(sendApduBtn);
 		
 		JButton loadAppletBtn = new JButton("Install Applet");
@@ -418,6 +418,7 @@ public class MainForm {
 		
 		comboBoxModel = new DefaultComboBoxModel<String>();
 		aidComboBox = new JComboBox<String>();
+		aidComboBox.setFont(new Font("Courier New", Font.PLAIN, 12));
 		aidComboBox.setEnabled(false);
 		aidComboBox.setBounds(440, 52, 261, 24);
 		aidComboBox.setModel(comboBoxModel);
@@ -501,8 +502,11 @@ public class MainForm {
 			refreshAidCombo();
 			aidComboBox.setEnabled(true);
 			selectAppBtn.setEnabled(true);
+			apduTextField.setEnabled(true);
+			sendApduBtn.setEnabled(true);
+			selectedAidLabel.setText("Selected AID: " + aid);
 			
-			writeLine("Applet Class Installed: " + classFile.getName() + " [AID: " + aid + "]");
+			writeLine("Applet Class Installed and Selected: " + classFile.getName() + " [AID: " + aid + "]");
 			writeLine();
 		}
 		else
