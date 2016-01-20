@@ -83,16 +83,17 @@ public class MainForm {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		int sizeWidth = 968;
+		int sizeHeight = 617;
+		
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		int locationX = (screenSize.width - 858) / 2;
-		int locationY = (screenSize.height - 560) / 2;
-		int sizeWidth = 858;
-		int sizeHeight = 560;
+		int locationX = (screenSize.width - sizeWidth) / 2;
+		int locationY = (screenSize.height - sizeHeight) / 2;
 		
 		frmJcardsim = new JFrame();
 		frmJcardsim.setResizable(false);
 		frmJcardsim.setTitle("jCardSim GUI 1.0");
-		frmJcardsim.setBounds(locationX, locationY, 968, 617);
+		frmJcardsim.setBounds(locationX, locationY, sizeWidth, sizeHeight);
 		frmJcardsim.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmJcardsim.getContentPane().setLayout(null);
 		

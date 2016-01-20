@@ -10,6 +10,7 @@ import javax.swing.text.PlainDocument;
 public class HexUpperCaseField extends JTextField {
 	 
 	private int maxLenght = 256;
+	//private boolean spaces = false;
 	
     public HexUpperCaseField() {
          super();
