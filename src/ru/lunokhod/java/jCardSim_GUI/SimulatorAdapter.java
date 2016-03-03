@@ -4,10 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.ArrayList;
-import javax.smartcardio.CommandAPDU;
-import javax.smartcardio.ResponseAPDU;
 import com.licel.jcardsim.base.Simulator;
 import javacard.framework.AID;
 import javacard.framework.Applet;
@@ -56,7 +53,7 @@ public class SimulatorAdapter {
 			try
 			{
 				simulator.installApplet(appAid, appletClass);
-				applets.add(new AppletDescriptor(appAid, className, classFile.getPath(), bytes.length));
+				applets.add(new AppletDescriptor(appAid, jclass, classFile.getPath(), bytes.length));
 				
 				System.out.println("appletClass loaded into Simulator");
 				

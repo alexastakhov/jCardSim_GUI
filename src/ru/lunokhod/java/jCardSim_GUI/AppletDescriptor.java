@@ -1,25 +1,28 @@
 package ru.lunokhod.java.jCardSim_GUI;
 
 import java.util.ArrayList;
+
+import org.apache.bcel.classfile.JavaClass;
+
 import javacard.framework.AID;
 
 public class AppletDescriptor {
 	private AID aid;
-	private String className;
+	private JavaClass javaClass;
 	private ArrayList<String> superClassNames;
 	private String filePath;
 	private int size;
 	
 	public AppletDescriptor() { 
-		className = "";
+		javaClass = null;
 		superClassNames = new ArrayList<String>();
 		filePath = "";
 		size = 0;
 	}
 	
-	public AppletDescriptor(AID aid, String className, String filePath, int size) {
+	public AppletDescriptor(AID aid, JavaClass javaClass, String filePath, int size) {
 		this.aid = aid;
-		this.className = className;
+		this.javaClass = javaClass;
 		this.filePath = filePath;
 		this.size = size;
 	}
@@ -28,8 +31,8 @@ public class AppletDescriptor {
 		this.aid = aid;
 	}
 	
-	public void setClassName(String className) {
-		this.className = className;
+	public void setJavaClass(JavaClass javaClass) {
+		this.javaClass = javaClass;
 	}
 
 	public void setSuperClassNames(ArrayList<String> superClassNames) {
@@ -48,8 +51,8 @@ public class AppletDescriptor {
 		return aid;
 	}
 	
-	public String getClassName() {
-		return className;
+	public JavaClass getJavaClass() {
+		return javaClass;
 	}
 
 	public ArrayList<String> getSuperClassNames() {
@@ -62,6 +65,10 @@ public class AppletDescriptor {
 	
 	public int getSize() {
 		return size;
+	}
+	
+	public String getClassName() {
+		return javaClass.getClassName();
 	}
 }
 	

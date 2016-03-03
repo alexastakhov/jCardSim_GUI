@@ -165,7 +165,8 @@ public class MainForm {
                     classFileLabel.setText("Class File: " + classFile.getName());
                     classFileLabel.setToolTipText(classFile.getPath());
                     
-                    writeLine("Loaded Applet Class File: " + classFile.getPath());
+                    writeLine("Applet Class file has loaded: " + classFile.getPath());
+                    writeLine();
                 }
 			}
 		});
@@ -341,6 +342,10 @@ public class MainForm {
 		JButton infoButton = new JButton("");
 		infoButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				int posX = frmJcardsim.getLocation().x + frmJcardsim.getSize().width/2 - aboutDialog.getSize().width/2;
+				int posY = frmJcardsim.getLocation().y + frmJcardsim.getSize().height/2 - aboutDialog.getSize().height/2;
+				
+				aboutDialog.setLocation(posX, posY);
 				aboutDialog.setVisible(true);
 			}
 		});
@@ -452,7 +457,7 @@ public class MainForm {
 		}
 			
 		response = simulatorAdapter.sendAPDU(stringToBytes(apduTextField.getText()));
-		writeLine("Sent APDU = " + bytesToString(stringToBytes(apduTextField.getText()), true));
+		writeLine("Send APDU = " + bytesToString(stringToBytes(apduTextField.getText()), true));
 		writeLine("Card Response = " + bytesToString(response, true));
 	}
 	
@@ -467,7 +472,10 @@ public class MainForm {
 				apduTextField.setEnabled(true);
 				sendApduBtn.setEnabled(true);
 				selectedAidLabel.setText("Selected AID: " + aid);
-				writeLine("Applet " + appDscr.getClassName() + " [AID:" + aid + "] " + "has been selected");
+				
+				writeLine("Applet has been selected:");
+				writeLine("    AID  : " + aid);
+				writeLine("    Class: " + appDscr.getClassName());
 				writeLine();
 			}
 			else {
@@ -477,8 +485,8 @@ public class MainForm {
 	}
 	
 	private void loadApplet(String aid, File appFile) {
-		if (classFile == null) {
-			JOptionPane.showMessageDialog(new JFrame(), "Load Applet Class File", "Error", JOptionPane.ERROR_MESSAGE);
+		if (appFile == null) {
+			JOptionPane.showMessageDialog(new JFrame(), "Load Applet Class file before install", "Error", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 		
@@ -499,6 +507,8 @@ public class MainForm {
 		
 		if (simulatorAdapter.installApplet(aid, appFile))
 		{
+			AppletDescriptor appDscr = simulatorAdapter.getAppletDescriptor(aid);
+			
 			aidTextField.setText("");
 			refreshAidCombo();
 			aidComboBox.setEnabled(true);
@@ -507,7 +517,10 @@ public class MainForm {
 			sendApduBtn.setEnabled(true);
 			selectedAidLabel.setText("Selected AID: " + aid);
 			
-			writeLine("Applet Class Installed and Selected: " + classFile.getName() + " [AID: " + aid + "]");
+			writeLine("Applet Class Installed and Selected:");
+			writeLine("    AID  : " + aid);
+			writeLine("    File : " + appDscr.getFilePath());
+			writeLine("    Class: " + appDscr.getClassName());
 			writeLine();
 		}
 		else
