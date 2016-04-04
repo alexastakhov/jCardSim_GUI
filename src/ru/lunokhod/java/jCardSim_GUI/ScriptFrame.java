@@ -10,18 +10,10 @@ import javax.swing.JEditorPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.JToolBar;
 import javax.swing.JButton;
-import java.awt.Rectangle;
 import java.awt.Font;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
+@SuppressWarnings("serial")
 public class ScriptFrame extends JFrame {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 5952878796019893975L;
-
 	/**
 	 * Create the frame.
 	 */

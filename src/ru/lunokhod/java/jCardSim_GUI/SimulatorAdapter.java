@@ -19,11 +19,19 @@ public class SimulatorAdapter {
 	private SCAppClassLoader classLoader = new SCAppClassLoader();
 	private ArrayList<AppletDescriptor> applets = new ArrayList<AppletDescriptor>();
 	private AppletDescriptor selectedApplet = null;
+	private static SimulatorAdapter instance = null;
 	
-	public SimulatorAdapter() {
+	private SimulatorAdapter() {
 		simulator = new Simulator();
 	}
 
+	public static SimulatorAdapter getInstance() {
+		if (instance == null) 
+			instance = new SimulatorAdapter();
+
+		return instance;
+	}
+	
 	public boolean installApplet(String aid, File classFile) {
 		AID appAid = AIDUtil.create(aid);
 		Class<?> appletClass = null;
@@ -80,8 +88,8 @@ public class SimulatorAdapter {
 		installApplet(AIDUtil.create(aid).toString(), classFile);
 	}
 	
-	public ArrayList<AppletDescriptor> getInstalledApplets() {
-		return applets;
+	public AppletDescriptor[] getInstalledApplets() {
+		return applets.toArray(new AppletDescriptor[applets.size()]);
 	}
 	
 	public boolean isAppletInstalled(String aid) {

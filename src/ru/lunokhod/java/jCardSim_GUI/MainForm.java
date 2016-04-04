@@ -5,7 +5,6 @@ import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.util.ArrayList;
 import com.jgoodies.looks.plastic.Plastic3DLookAndFeel;
 import com.jgoodies.looks.plastic.theme.ExperienceRoyale;
 import com.licel.jcardsim.utils.AIDUtil;
@@ -40,6 +39,7 @@ public class MainForm {
 	private File classFile;
 	private DefaultComboBoxModel<String> comboBoxModel;
 	private AboutDialog aboutDialog;
+	private JCardSimInfoDialog infoDialog;
 	private JLabel selectedAidLabel;
 	private ScriptFrame scriptFrame;
 	
@@ -73,9 +73,10 @@ public class MainForm {
 	 */
 	public MainForm() {
 		classFile = null;
-		simulatorAdapter = new SimulatorAdapter();
+		simulatorAdapter = SimulatorAdapter.getInstance();
 		aboutDialog = new AboutDialog();
 		scriptFrame = new ScriptFrame();
+		infoDialog = new JCardSimInfoDialog();
 		initialize();
 	}
 
@@ -258,6 +259,15 @@ public class MainForm {
 		toolBar.addSeparator(new Dimension(6, 28));
 		
 		JButton appListButton = new JButton("");
+		appListButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				int posX = frmJcardsim.getLocation().x + frmJcardsim.getSize().width/2 - infoDialog.getSize().width/2;
+				int posY = frmJcardsim.getLocation().y + frmJcardsim.getSize().height/2 - infoDialog.getSize().height/2;
+				
+				infoDialog.setLocation(posX, posY);
+				infoDialog.setVisible(true);
+			}
+		});
 		appListButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent arg0) {
@@ -531,7 +541,7 @@ public class MainForm {
 	}
 	
 	private void refreshAidCombo() {
-		ArrayList<AppletDescriptor> applets = simulatorAdapter.getInstalledApplets();
+		AppletDescriptor[] applets = simulatorAdapter.getInstalledApplets();
 		
 		comboBoxModel.removeAllElements();
 		for (AppletDescriptor ad : applets) {
