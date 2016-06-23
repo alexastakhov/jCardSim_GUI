@@ -160,7 +160,7 @@ public class MainForm {
 				fileOpen.setMultiSelectionEnabled(false);
 				fileOpen.setFileFilter(new FileNameExtensionFilter("JavaCard Class File .class", "class"));
 				
-                int ret = fileOpen.showDialog(null, "Открыть файл");                
+                int ret = fileOpen.showDialog(null, "Open file");                
                 if (ret == JFileChooser.APPROVE_OPTION) {
                 	classFile = fileOpen.getSelectedFile();
                     classFileLabel.setText("Class File: " + classFile.getName());
